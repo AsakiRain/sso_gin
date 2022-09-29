@@ -1,14 +1,15 @@
 package api
 
 import (
-	"github.com/gin-gonic/gin"
-	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"sso_gin/constants"
 	"sso_gin/db"
 	"sso_gin/models"
 	"sso_gin/utils"
 	"unsafe"
+
+	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 )
 
 const (
@@ -36,6 +37,7 @@ func HandleRegister(ctx *gin.Context) {
 			"code":    400,
 			"message": "参数错误",
 		})
+		return
 	}
 
 	name := rForm.Username
