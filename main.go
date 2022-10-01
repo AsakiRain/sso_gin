@@ -10,8 +10,8 @@ import (
 
 func main() {
 	db.ConnectMYSQL()
+	db.SetupGoCache()
 	r := gin.Default()
-
 	api.SetupRouter(r)
 
 	err := r.Run(":3000")

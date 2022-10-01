@@ -6,6 +6,9 @@ import (
 	"html/template"
 	"log"
 	"sso_gin/config"
+	"sso_gin/db"
+	"sso_gin/model"
+	"time"
 
 	"gopkg.in/gomail.v2"
 )
@@ -39,4 +42,17 @@ func SendMail(to, subject, body string) error {
 	}
 
 	return err
+}
+
+func CheckCode(email string, code string) bool {
+	CACHE := *db.CACHE
+	cacheKey := fmt.Sprintf("email_captcha_%s", code)
+	x, found := CACHE.Get(cacheKey)
+	if found {
+		emailCaptcha := x.(model.EmailCaptcha)
+		if emailCaptcha.Email == email && emailCaptcha.ExpiresAt > time.Now().Unix() {
+			return true
+		}
+	}
+	return false
 }

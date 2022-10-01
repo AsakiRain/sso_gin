@@ -1,11 +1,12 @@
 package db
 
 import (
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
 	"log"
 	"sso_gin/config"
 	"sso_gin/model"
+
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 var (
@@ -18,7 +19,7 @@ func ConnectMYSQL() {
 	if err != nil {
 		log.Fatalf("连接数据库失败: %v", err)
 	}
-	err = db.AutoMigrate(&model.User{})
+	err = db.AutoMigrate(&model.User{}, &model.RegFlow{})
 	if err != nil {
 		log.Fatalf("迁移模型失败：%v", err)
 	}

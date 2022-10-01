@@ -1,10 +1,12 @@
 package api_email
 
 import (
+	"fmt"
 	"net/http"
 	"sso_gin/db"
 	"sso_gin/model"
 	"sso_gin/utils"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,6 +17,7 @@ type EmailForm struct {
 
 func HandleSendCode(ctx *gin.Context) {
 	MYSQL := *db.MYSQL
+	CACHE := *db.CACHE
 	var emailForm EmailForm
 	err := ctx.ShouldBindJSON(&emailForm)
 	if err != nil {
@@ -33,7 +36,16 @@ func HandleSendCode(ctx *gin.Context) {
 		})
 		return
 	}
-	mailBody, err := utils.ParseTemplate("captcha.html", map[string]interface{}{"code": "123456", "ip": ctx.ClientIP()})
+
+	code := utils.RandomCode(6)
+	cacheKey := fmt.Sprintf("email_captcha_%s", code)
+	emailCaptcha := model.EmailCaptcha{
+		Email:     emailForm.Email,
+		Code:      code,
+		ExpiresAt: time.Now().Add(time.Minute * 10).Unix(),
+	}
+	CACHE.Set(cacheKey, emailCaptcha, time.Minute*10)
+	mailBody, err := utils.ParseTemplate("captcha.html", map[string]interface{}{"code": code, "ip": ctx.ClientIP()})
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"code":    500,
