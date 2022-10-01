@@ -4,15 +4,12 @@ go 1.19
 
 require (
 	github.com/gin-gonic/gin v1.8.1
+	github.com/patrickmn/go-cache v2.1.0+incompatible
+	github.com/satori/go.uuid v1.2.0
 	github.com/spf13/viper v1.13.0
 	golang.org/x/crypto v0.0.0-20220926161630-eccd6366d1be
 	gorm.io/driver/mysql v1.3.6
 	gorm.io/gorm v1.23.10
-)
-
-require (
-	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
-	github.com/satori/go.uuid v1.2.0 // indirect
 )
 
 require (

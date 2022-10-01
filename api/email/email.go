@@ -11,14 +11,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type EmailForm struct {
-	Email string `json:"email"`
-}
-
 func HandleSendCode(ctx *gin.Context) {
 	MYSQL := *db.MYSQL
 	CACHE := *db.CACHE
-	var emailForm EmailForm
+	var emailForm model.EmailForm
 	err := ctx.ShouldBindJSON(&emailForm)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{

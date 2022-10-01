@@ -13,7 +13,7 @@ var (
 	MYSQL *gorm.DB
 )
 
-func ConnectMYSQL() {
+func SetupMYSQL() {
 	dblink := config.Dbuser + ":" + config.Dbpass + "@tcp(" + config.Dbhost + ":" + config.Dbport + ")/" + config.Dbname + "?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dblink), &gorm.Config{})
 	if err != nil {

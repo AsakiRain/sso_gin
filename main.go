@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	db.ConnectMYSQL()
+	db.SetupMYSQL()
 	db.SetupGoCache()
 	r := gin.Default()
 	api.SetupRouter(r)

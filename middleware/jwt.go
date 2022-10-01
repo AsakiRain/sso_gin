@@ -8,11 +8,11 @@ import (
 )
 
 func JwtAuth() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		auth := c.Request.Header.Get("Authorization")
+	return func(ctx *gin.Context) {
+		auth := ctx.Request.Header.Get("Authorization")
 		if len(auth) == 0 {
-			c.Abort()
-			c.JSON(http.StatusUnprocessableEntity, gin.H{
+			ctx.Abort()
+			ctx.JSON(http.StatusUnprocessableEntity, gin.H{
 				"code":    422,
 				"message": "token不存在",
 			})
@@ -21,13 +21,13 @@ func JwtAuth() gin.HandlerFunc {
 		// 校验token，只要出错直接拒绝请求
 		_, err := utils.ParseToken(auth)
 		if err != nil {
-			c.Abort()
-			c.JSON(http.StatusUnprocessableEntity, gin.H{
+			ctx.Abort()
+			ctx.JSON(http.StatusUnprocessableEntity, gin.H{
 				"code":    422,
 				"message": err.Error(),
 			})
 			return
 		}
-		c.Next()
+		ctx.Next()
 	}
 }

@@ -2,7 +2,7 @@ package api
 
 import (
 	"net/http"
-	"sso_gin/constants"
+	"sso_gin/constant"
 	"sso_gin/db"
 	"sso_gin/model"
 	"sso_gin/utils"
@@ -13,23 +13,15 @@ import (
 )
 
 const (
-	RegUsername = constants.RegUsername
-	RegPassword = constants.RegPassword
-	RegEmail    = constants.RegEmail
+	RegUsername = constant.RegUsername
+	RegPassword = constant.RegPassword
+	RegEmail    = constant.RegEmail
 )
-
-type RegisterForm struct {
-	Username string `json:"username" binding:"required"`
-	Nickname string `json:"nickname" binding:"required"`
-	Password string `json:"password" binding:"required"`
-	Email    string `json:"email" binding:"required"`
-	Code     string `json:"code" binding:"required"`
-}
 
 func HandleRegister(ctx *gin.Context) {
 	MYSQL := *db.MYSQL
-	var rForm RegisterForm
-	err := ctx.ShouldBindJSON(&rForm)
+	var registerForm model.RegisterForm
+	err := ctx.ShouldBindJSON(&registerForm)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"code":    400,
@@ -38,11 +30,11 @@ func HandleRegister(ctx *gin.Context) {
 		return
 	}
 
-	name := rForm.Username
-	nickname := rForm.Nickname
-	password := rForm.Password
-	email := rForm.Email
-	code := rForm.Code
+	name := registerForm.Username
+	nickname := registerForm.Nickname
+	password := registerForm.Password
+	email := registerForm.Email
+	code := registerForm.Code
 
 	if !utils.CheckRegxp(name, RegUsername) {
 		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
