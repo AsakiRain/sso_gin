@@ -1,10 +1,16 @@
 package api
 
-import "github.com/gin-gonic/gin"
+import (
+	api_user "sso_gin/api/user"
+	"sso_gin/middleware"
+
+	"github.com/gin-gonic/gin"
+)
 
 func SetupRouter(router *gin.Engine) {
-	v1 := router.Group("/v1")
+	router.POST("/register", HandleRegister)
+	user := router.Group("/user", middleware.JwtAuth())
 	{
-		v1.POST("/register", HandleRegister)
+		user.GET("/info", api_user.HandleUserInfo)
 	}
 }

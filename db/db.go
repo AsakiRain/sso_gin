@@ -5,7 +5,7 @@ import (
 	"gorm.io/gorm"
 	"log"
 	"sso_gin/config"
-	"sso_gin/models"
+	"sso_gin/model"
 )
 
 var (
@@ -18,7 +18,7 @@ func ConnectMYSQL() {
 	if err != nil {
 		log.Fatalf("连接数据库失败: %v", err)
 	}
-	err = db.AutoMigrate(&models.User{})
+	err = db.AutoMigrate(&model.User{})
 	if err != nil {
 		log.Fatalf("迁移模型失败：%v", err)
 	}

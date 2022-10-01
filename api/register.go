@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"sso_gin/constants"
 	"sso_gin/db"
-	"sso_gin/models"
+	"sso_gin/model"
 	"sso_gin/utils"
 	"unsafe"
 
@@ -17,8 +17,6 @@ const (
 	RegPassword = constants.RegPassword
 	RegEmail    = constants.RegEmail
 )
-
-type User models.User
 
 type RegisterForm struct {
 	Username string `json:"username" binding:"required"`
@@ -74,7 +72,7 @@ func HandleRegister(ctx *gin.Context) {
 		})
 		return
 	}
-	var user models.User
+	var user model.User
 	result := MYSQL.First(&user, "username = ?", name)
 	if result.Error == nil {
 		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
@@ -92,15 +90,29 @@ func HandleRegister(ctx *gin.Context) {
 		})
 		return
 	}
-	MYSQL.Create(&User{
+	MYSQL.Create(&model.User{
 		Username: name,
 		Nickname: nickname,
 		Pass:     *(*string)(unsafe.Pointer(&pass)),
 		Email:    email,
 	})
-
+	userJwt := model.UserJwt{
+		Username: name,
+		Nickname: nickname,
+		Role:     "user",
+	}
+	jwtToken, err := utils.GenerateToken(userJwt)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"code":    500,
+			"message": "什么动静",
+			"detail":  err.Error(),
+		})
+		return
+	}
 	ctx.JSON(http.StatusOK, gin.H{
 		"code":    200,
 		"message": "注册成功",
+		"token":   jwtToken,
 	})
 }
