@@ -26,12 +26,27 @@ port = "端口"
 username = "用户名"
 password = "密码"
 database = "数据库"
+
+[jwt]
+secret = "草神小小的，香香的🤤"
+
+[template]
+path = "template"
+
+[mail]
+host = "smtp服务器地址"
+port = 465
+ssl = true
+username = "邮箱"
+password = "密码"
+alias = "发件人别名"
 ```
 3. ```go run main.go```小跑一下
 4. ```go build sso_gin```编译出执行文件
 5. 你可以双击打开，但是```log```颜色无法被```cmd```正常解析，所以请使用```Windows Terminal```
 
 ## 2.怎么玩啊
+> 另请参阅ApiFox
 
 1. 一个请求打到```localhost:3000/register```
 
