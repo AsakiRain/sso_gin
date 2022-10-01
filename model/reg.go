@@ -20,7 +20,7 @@ type RegFlow struct {
 }
 
 type StepEmailForm struct {
-	Email  string
-	Code   string
-	Serial string
+	Email  string `json:"email" binding:"required"`
+	Code   string `json:"code" binding:"required"`
+	Serial string `json:"serial" binding:"required"`
 }

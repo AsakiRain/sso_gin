@@ -1,7 +1,7 @@
 package model
 
 type EmailForm struct {
-	Email string `json:"email"`
+	Email string `json:"email" binding:"required"`
 }
 type EmailCaptcha struct {
 	Email     string
