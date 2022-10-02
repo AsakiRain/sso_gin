@@ -14,6 +14,7 @@ func SetupRouter(router *gin.Engine) {
 	reg := router.Group("/reg/flow")
 	{
 		reg.GET("/0", api_reg.HandleStepStart)
+		reg.POST("/1", api_reg.HandleStepTOS)
 		reg.POST("/2", api_reg.HandleStepEmail)
 	}
 	user := router.Group("/user", middleware.JwtAuth())

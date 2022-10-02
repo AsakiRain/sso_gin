@@ -19,6 +19,11 @@ type RegFlow struct {
 	DeletedAt *int64  `json:"deleted_at"`
 }
 
+type StepTOSForm struct {
+	AcceptTos *bool  `json:"accept_tos" binding:"required"`
+	Serial    string `json:"serial" binding:"required"`
+}
+
 type StepEmailForm struct {
 	Email  string `json:"email" binding:"required"`
 	Code   string `json:"code" binding:"required"`
