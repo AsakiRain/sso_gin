@@ -23,8 +23,22 @@ func HandleSendCode(ctx *gin.Context) {
 		})
 		return
 	}
+	email := emailForm.Email
+	cdKey := fmt.Sprintf("email_cd_%s", email)
+	x, found := CACHE.Get(cdKey)
+	if found {
+		cdAt := x.(int64)
+		if cdAt > time.Now().Unix() {
+			ctx.JSON(http.StatusUnprocessableEntity, gin.H{
+				"code":    422,
+				"message": fmt.Sprintf("操作过于频繁，请在%d秒后重试", cdAt-time.Now().Unix()),
+			})
+			return
+		}
+	}
+
 	var userInfo model.UserInfo
-	result := MYSQL.First(&userInfo, "email = ?", emailForm.Email)
+	result := MYSQL.First(&userInfo, "email = ?", email)
 	if result.Error == nil {
 		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
 			"code":    422,
@@ -36,11 +50,13 @@ func HandleSendCode(ctx *gin.Context) {
 	code := utils.RandomCode(6)
 	cacheKey := fmt.Sprintf("email_captcha_%s", code)
 	emailCaptcha := model.EmailCaptcha{
-		Email:     emailForm.Email,
+		Email:     email,
 		Code:      code,
-		ExpiresAt: time.Now().Add(time.Minute * 10).Unix(),
+		ExpiresAt: time.Now().Add(time.Minute * 10).UnixMilli(),
 	}
 	CACHE.Set(cacheKey, emailCaptcha, time.Minute*10)
+	CACHE.Set(cdKey, time.Now().Add(time.Second*60).Unix(), time.Second*60)
+	startTime := time.Now()
 	mailBody, err := utils.ParseTemplate("captcha.html", map[string]interface{}{"code": code, "ip": ctx.ClientIP()})
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
@@ -50,7 +66,7 @@ func HandleSendCode(ctx *gin.Context) {
 		})
 		return
 	}
-	err = utils.SendMail(emailForm.Email, "注册验证码", mailBody)
+	err = utils.SendMail(email, "注册验证码", mailBody)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"code":    500,
@@ -59,8 +75,10 @@ func HandleSendCode(ctx *gin.Context) {
 		})
 		return
 	}
+	endTime := time.Now()
 	ctx.JSON(http.StatusOK, gin.H{
 		"code":    200,
 		"message": "发送成功",
+		"detail":  fmt.Sprintf("耗时%f秒", endTime.Sub(startTime).Seconds()),
 	})
 }
