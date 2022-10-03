@@ -33,7 +33,11 @@ func HandleStepTOS(ctx *gin.Context) {
 		return
 	}
 	var regFlow model.RegFlow
-	MYSQL.Model(&regFlow).Where("serial = ?", serial).Update("step", 1)
+	postForm := map[string]interface{}{
+		"step":       1,
+		"accept_tos": acceptTos,
+	}
+	MYSQL.Model(&regFlow).Where("serial = ?", serial).Updates(postForm)
 	ctx.JSON(http.StatusOK, gin.H{
 		"code":    200,
 		"message": "验证成功",

@@ -2,6 +2,7 @@ package api_reg
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"sso_gin/db"
 	"sso_gin/model"
@@ -40,7 +41,16 @@ func HandleStepEmail(ctx *gin.Context) {
 	cacheKey := fmt.Sprintf("email_captcha_%s", code)
 	CACHE.Delete(cacheKey)
 
-	state := uuid.NewV4().String()
+	uuidV4, err := uuid.NewV4()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"code":    500,
+			"message": "服务器错误",
+		})
+		log.Printf("未能产生uuid：%v", err)
+		return
+	}
+	state := uuidV4.String()
 	var regFlow model.RegFlow
 	updateForm := map[string]interface{}{
 		"step":     2,
@@ -49,9 +59,10 @@ func HandleStepEmail(ctx *gin.Context) {
 	MYSQL.Model(&regFlow).Where("serial = ?", serial).Updates(updateForm)
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"code":       200,
-		"message":    "验证成功",
-		"url":        "/reg/flow/3",
-		"link_start": utils.GenerateLinkStart(state),
+		"code":        200,
+		"message":     "验证成功",
+		"url":         "/reg/flow/3",
+		"link_start":  utils.GenerateLinkStart(state),
+		"link_remake": utils.GenerateLinkRemake(),
 	})
 }
