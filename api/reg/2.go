@@ -9,13 +9,15 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 	uuid "github.com/satori/go.uuid"
 )
 
 func HandleStepEmail(ctx *gin.Context) {
+	MYSQL := *db.MYSQL
 	CACHE := *db.CACHE
 	var stepEmailForm model.StepEmailForm
-	err := ctx.ShouldBindJSON(&stepEmailForm)
+	err := ctx.ShouldBindBodyWith(&stepEmailForm, binding.JSON)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"code":    400,
@@ -26,10 +28,6 @@ func HandleStepEmail(ctx *gin.Context) {
 	email := stepEmailForm.Email
 	code := strings.ToUpper(stepEmailForm.Code)
 	serial := stepEmailForm.Serial
-
-	//应当检测流程是否存在
-	fmt.Printf("Serial(暂时不用):%s", serial)
-	//
 
 	valid := utils.CheckCode(email, code)
 	if !valid {
@@ -42,9 +40,13 @@ func HandleStepEmail(ctx *gin.Context) {
 	cacheKey := fmt.Sprintf("email_captcha_%s", code)
 	CACHE.Delete(cacheKey)
 
-	//应当更新数据库
-	//
 	state := uuid.NewV4().String()
+	var regFlow model.RegFlow
+	updateForm := map[string]interface{}{
+		"step":     2,
+		"ms_state": state,
+	}
+	MYSQL.Model(&regFlow).Where("serial = ?", serial).Updates(updateForm)
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"code":       200,
