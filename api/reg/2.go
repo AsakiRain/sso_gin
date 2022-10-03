@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	uuid "github.com/satori/go.uuid"
 )
 
 func HandleStepEmail(ctx *gin.Context) {
@@ -43,10 +44,12 @@ func HandleStepEmail(ctx *gin.Context) {
 
 	//应当更新数据库
 	//
+	state := uuid.NewV4().String()
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"code":    200,
-		"message": "验证成功",
-		"url":     "/reg/flow/3",
+		"code":       200,
+		"message":    "验证成功",
+		"url":        "/reg/flow/3",
+		"link_start": utils.GenerateLinkStart(state),
 	})
 }

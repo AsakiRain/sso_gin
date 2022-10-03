@@ -6,6 +6,7 @@ type RegFlow struct {
 	Log       *string `json:"log"`
 	MsStep    int     `json:"ms_step" gorm:"default:0;not null"`
 	MsTip     *string `json:"ms_tip"`
+	MsState   *string `json:"ms_state"`
 	AcceptTos *bool   `json:"accept_tos" gorm:"default:false;not null"`
 	Email     *string `json:"email"`
 	Username  *string `json:"username"`
