@@ -11,7 +11,7 @@ import (
 
 func SetupRouter(router *gin.Engine) {
 	router.POST("/register", HandleRegister)
-	reg := router.Group("/reg/flow")
+	reg := router.Group("/reg/flow", middleware.FlowCheck())
 	{
 		reg.GET("/0", api_reg.HandleStepStart)
 		reg.POST("/1", api_reg.HandleStepTOS)
