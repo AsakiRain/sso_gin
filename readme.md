@@ -40,6 +40,11 @@ ssl = true
 username = "邮箱"
 password = "密码"
 alias = "发件人别名"
+
+[ms]
+client_id = "创建应用的id"
+client_secret = "密钥不知道为什么暂时用不上"
+redirect_uri = "前端回调链接"
 ```
 3. ```go run main.go```小跑一下
 4. ```go build sso_gin```编译出执行文件
