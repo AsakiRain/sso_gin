@@ -12,7 +12,7 @@ require (
 	gorm.io/gorm v1.23.10
 )
 
-require github.com/go-resty/resty/v2 v2.7.0 // indirect
+require github.com/go-resty/resty/v2 v2.7.0
 
 require (
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
