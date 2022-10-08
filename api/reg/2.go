@@ -39,12 +39,11 @@ func HandleStepEmail(ctx *gin.Context) {
 	cacheKey := fmt.Sprintf("email_captcha_%s", code)
 	CACHE.Delete(cacheKey)
 
-	var regFlow model.RegFlow
 	updateForm := map[string]interface{}{
 		"step":  2,
 		"email": email,
 	}
-	MYSQL.Model(&regFlow).Where("serial = ?", serial).Updates(updateForm)
+	MYSQL.Model(&model.RegFlow{}).Where("serial = ?", serial).Updates(updateForm)
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"code":    200,

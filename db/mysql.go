@@ -19,7 +19,7 @@ func SetupMYSQL() {
 	if err != nil {
 		log.Fatalf("连接数据库失败: %v", err)
 	}
-	err = db.AutoMigrate(&model.User{}, &model.RegFlow{})
+	err = db.AutoMigrate(&model.User{}, &model.RegFlow{}, &model.Minecraft{})
 	if err != nil {
 		log.Fatalf("迁移模型失败：%v", err)
 	}

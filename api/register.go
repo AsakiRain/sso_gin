@@ -91,6 +91,7 @@ func HandleRegister(ctx *gin.Context) {
 	userJwt := model.UserJwt{
 		Username: name,
 		Nickname: nickname,
+		Email:    email,
 		Role:     "user",
 	}
 	jwtToken, err := utils.GenerateToken(userJwt)

@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"sso_gin/db"
 	"sso_gin/model"
@@ -41,7 +42,14 @@ func FlowCheck() gin.HandlerFunc {
 			ctx.Abort()
 			return
 		}
-
+		/////////////////////////////////
+		// SHOULD REMOVE IN PRODUCTION //
+		/////////////////////////////////
+		if ctx.Request.URL.Query().Get("dev") == "true" {
+			log.Println("Developer passed step check.")
+			ctx.Next()
+			return
+		}
 		yourStep := ctx.Request.URL.Path[len("/reg/flow/"):]
 		myStep := fmt.Sprintf("%d", regFlow.Step+1)
 		if yourStep != myStep {

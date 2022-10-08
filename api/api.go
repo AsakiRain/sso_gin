@@ -19,6 +19,9 @@ func SetupRouter(router *gin.Engine) {
 		reg.POST("/3", api_reg.HandleStepAccount)
 		reg.POST("/4", api_reg.HandleStepMs)
 		reg.GET("/4", api_reg.HandleMsQuery)
+		reg.POST("/5", api_reg.HandleStepQq)
+		reg.GET("/6", api_reg.HandleStepPerference)
+		reg.GET("/7", api_reg.HandleStepDone)
 	}
 	user := router.Group("/user", middleware.JwtAuth())
 	{

@@ -3,7 +3,6 @@ package utils
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"sso_gin/config"
 	"sso_gin/db"
 	"sso_gin/model"
@@ -31,23 +30,38 @@ func GenerateLinkRemake() string {
 	// return "https://login.live.com/logout.srf"
 }
 
-func GailyPass(serial string, step int, msStepInfo model.MsTipForm) bool {
+func JudgeResp(resp *resty.Response, err error, msTipForm *model.MsTipForm, info string) bool {
+	msTipForm.Trace = resp.Request.TraceInfo()
+	if err != nil {
+		msTipForm.Info = info
+		msTipForm.Error = err.Error()
+		return false
+	}
+	if resp.StatusCode() != 200 {
+		msTipForm.Info = info
+		msTipForm.Error = fmt.Sprintf("StatusCode: %d", resp.StatusCode())
+		return false
+	}
+	return true
+}
+
+func GailyPass(serial string, step int, msTipForm model.MsTipForm) bool {
 	MYSQL := *db.MYSQL
 
 	commitForm := map[string]interface{}{
 		"ms_step": step,
-		"ms_tip":  ToJson(&msStepInfo),
+		"ms_tip":  ToJson(&msTipForm),
 	}
 	MYSQL.Model(&model.RegFlow{}).Where("serial = ?", serial).Updates(commitForm)
 	return true
 }
 
-func SadlyDie(serial string, step int, msStepInfo model.MsTipForm) bool {
+func SadlyDie(serial string, step int, msTipForm model.MsTipForm) bool {
 	MYSQL := *db.MYSQL
 
 	commitForm := map[string]interface{}{
 		"ms_step": step,
-		"ms_tip":  ToJson(&msStepInfo),
+		"ms_tip":  ToJson(&msTipForm),
 		"ms_end":  -1,
 	}
 	MYSQL.Model(&model.RegFlow{}).Where("serial = ?", serial).Updates(commitForm)
@@ -59,30 +73,31 @@ func LinkStart(serial string, msToken string) bool {
 
 	MYSQL.Model(&model.RegFlow{}).Where("serial = ?", serial).Update("ms_step", 1)
 
-	msXblReturn, msStepInfo := MsStepXbl(serial, msToken)
-	if msStepInfo.Error != "" {
-		return SadlyDie(serial, 2, msStepInfo)
+	msXblReturn, msTipForm := MsStepXbl(serial, msToken)
+	if msTipForm.Error != "" {
+		return SadlyDie(serial, 2, msTipForm)
 	}
-	msXstsReturn, msStepInfo := MsStepXsts(serial, msXblReturn)
-	if msStepInfo.Error != "" {
-		return SadlyDie(serial, 3, msStepInfo)
+	msXstsReturn, msTipForm := MsStepXsts(serial, msXblReturn)
+	if msTipForm.Error != "" {
+		return SadlyDie(serial, 3, msTipForm)
 	}
-	msMinecraftReturn, msStepInfo := MsStepMinecraft(serial, msXstsReturn)
-	if msStepInfo.Error != "" {
-		return SadlyDie(serial, 4, msStepInfo)
+	msMinecraftReturn, msTipForm := MsStepMinecraft(serial, msXstsReturn)
+	if msTipForm.Error != "" {
+		return SadlyDie(serial, 4, msTipForm)
 	}
-	msEntitlementsReturn, msStepInfo := MsStepEntitlements(serial, msMinecraftReturn)
-	if msStepInfo.Error != "" {
-		return SadlyDie(serial, 5, msStepInfo)
+	msEntitlementsReturn, msTipForm := MsStepEntitlements(serial, msMinecraftReturn)
+	if msTipForm.Error != "" {
+		return SadlyDie(serial, 5, msTipForm)
 	}
-	msProfileReturn, msStepInfo := MsStepProfile(serial, msMinecraftReturn)
-	if msStepInfo.Error != "" {
-		return SadlyDie(serial, 6, msStepInfo)
+	msProfileReturn, msTipForm := MsStepProfile(serial, msMinecraftReturn)
+	if msTipForm.Error != "" {
+		return SadlyDie(serial, 6, msTipForm)
 	}
 
 	updateForm := map[string]interface{}{
+		"step":                  4,
 		"MsStep":                7,
-		"MsTip":                 ToJson(&msStepInfo),
+		"MsTip":                 ToJson(&msTipForm),
 		"MsEnd":                 1,
 		"MinecraftId":           msProfileReturn.Id,
 		"MinecraftName":         msProfileReturn.Name,
@@ -117,10 +132,7 @@ func MsStepXbl(serial string, msToken string) (model.MsXblReturn, model.MsTipFor
 		SetBody(msXblForm).
 		Post("https://user.auth.xboxlive.com/user/authenticate")
 
-	msTipForm.Trace = resp.Request.TraceInfo()
-	if err != nil || resp.StatusCode() != 200 {
-		msTipForm.Info = "请求XBL认证失败"
-		msTipForm.Error = err.Error()
+	if JudgeResp(resp, err, &msTipForm, "请求XBL认证失败") == false {
 		return model.MsXblReturn{}, msTipForm
 	}
 
@@ -167,10 +179,7 @@ func MsStepXsts(serial string, msXblReturn model.MsXblReturn) (model.MsXstsRetur
 		SetBody(msXstsForm).
 		Post("https://xsts.auth.xboxlive.com/xsts/authorize")
 
-	msTipForm.Trace = resp.Request.TraceInfo()
-	if err != nil || resp.StatusCode() != 200 {
-		msTipForm.Info = "请求XSTS认证失败"
-		msTipForm.Error = err.Error()
+	if JudgeResp(resp, err, &msTipForm, "请求XSTS认证失败") == false {
 		return model.MsXstsReturn{}, msTipForm
 	}
 
@@ -210,10 +219,7 @@ func MsStepMinecraft(serial string, msXstsReturn model.MsXstsReturn) (model.MsMi
 		SetBody(msMinecraftForm).
 		Post("https://api.minecraftservices.com/authentication/login_with_xbox")
 
-	msTipForm.Trace = resp.Request.TraceInfo()
-	if err != nil || resp.StatusCode() != 200 {
-		msTipForm.Info = "请求Minecraft认证失败"
-		msTipForm.Error = err.Error()
+	if JudgeResp(resp, err, &msTipForm, "请求Minecraft认证失败") == false {
 		return model.MsMinecraftReturn{}, msTipForm
 	}
 
@@ -247,14 +253,10 @@ func MsStepEntitlements(serial string, msMinecraftReturn model.MsMinecraftReturn
 		SetHeader("Authorization", "Bearer "+msMinecraftReturn.AccessToken).
 		Get("https://api.minecraftservices.com/entitlements/mcstore")
 
-	msTipForm.Trace = resp.Request.TraceInfo()
-	if err != nil || resp.StatusCode() != 200 {
-		msTipForm.Info = "请求Minecraft Entitlements失败"
-		msTipForm.Error = err.Error()
+	if JudgeResp(resp, err, &msTipForm, "请求Minecraft Entitlements失败") == false {
 		return model.MsEntitlementsReturn{}, msTipForm
 	}
 
-	log.Printf("Body: %s", resp.Body())
 	msEntitlementsResp := model.MsEntitlementsResp{}
 	err = json.Unmarshal(resp.Body(), &msEntitlementsResp)
 	if err != nil {
@@ -283,14 +285,10 @@ func MsStepProfile(serial string, msMinecraftReturn model.MsMinecraftReturn) (mo
 		SetHeader("Authorization", "Bearer "+msMinecraftReturn.AccessToken).
 		Get("https://api.minecraftservices.com/minecraft/profile")
 
-	msTipForm.Trace = resp.Request.TraceInfo()
-	if err != nil || resp.StatusCode() != 200 {
-		msTipForm.Info = "请求Minecraft Profile失败"
-		msTipForm.Error = err.Error()
+	if JudgeResp(resp, err, &msTipForm, "请求Minecraft Profile失败") == false {
 		return model.MsProfileReturn{}, msTipForm
 	}
 
-	log.Printf("Body: %s", resp.Body())
 	msProfileResp := model.MsProfileResp{}
 	err = json.Unmarshal(resp.Body(), &msProfileResp)
 	if err != nil {

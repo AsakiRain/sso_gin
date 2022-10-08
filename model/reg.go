@@ -159,7 +159,7 @@ type MsProfileResp struct {
 
 type MsProfileReturn MsProfileResp
 
-type Minecraft struct {
+type MsMinecraft struct {
 	MinecraftId           *string                `json:"minecraft_id"`
 	MinecraftName         *string                `json:"minecraft_name"`
 	MinecraftSkins        *[]MinecraftSkin       `json:"minecraft_skins"`

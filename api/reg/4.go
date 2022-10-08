@@ -26,9 +26,9 @@ func HandleStepMs(ctx *gin.Context) {
 	serial := stepMsForm.Serial
 
 	var regFlow model.RegFlow
-	MYSQL.Model(&regFlow).Where("serial = ?", serial).First(&regFlow)
+	MYSQL.First(&regFlow, "serial = ?", serial)
 	// 这里不用判断记录是否存在，因为中间件会检查的
-	if regFlow.MsState != nil && *regFlow.MsState != msState {
+	if regFlow.MsState == nil || *regFlow.MsState != msState {
 		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
 			"code":    422,
 			"message": "state不匹配",
@@ -68,7 +68,7 @@ func HandleMsQuery(ctx *gin.Context) {
 	var regFlow model.RegFlow
 	MYSQL.Model(&regFlow).Where("serial = ?", serial).First(&regFlow)
 
-	var minecraft model.Minecraft
+	var msMinecraft model.MsMinecraft
 	if regFlow.MsEnd == 1 {
 		var minecraftSkins []model.MinecraftSkin
 		var minecraftCapes []model.MinecraftCape
@@ -77,11 +77,11 @@ func HandleMsQuery(ctx *gin.Context) {
 		utils.ToStruct(&minecraftCapes, *regFlow.MinecraftCapes)
 		utils.ToStruct(&minecraftEntitlements, *regFlow.MinecraftEntitlements)
 
-		minecraft.MinecraftId = regFlow.MinecraftId
-		minecraft.MinecraftName = regFlow.MinecraftName
-		minecraft.MinecraftSkins = &minecraftSkins
-		minecraft.MinecraftCapes = &minecraftCapes
-		minecraft.MinecraftEntitlements = &minecraftEntitlements
+		msMinecraft.MinecraftId = regFlow.MinecraftId
+		msMinecraft.MinecraftName = regFlow.MinecraftName
+		msMinecraft.MinecraftSkins = &minecraftSkins
+		msMinecraft.MinecraftCapes = &minecraftCapes
+		msMinecraft.MinecraftEntitlements = &minecraftEntitlements
 	}
 	ctx.JSON(http.StatusOK, gin.H{
 		"code":      200,
@@ -89,6 +89,6 @@ func HandleMsQuery(ctx *gin.Context) {
 		"ms_step":   regFlow.MsStep,
 		"ms_tip":    regFlow.MsTip,
 		"ms_end":    regFlow.MsEnd,
-		"minecraft": minecraft,
+		"minecraft": msMinecraft,
 	})
 }

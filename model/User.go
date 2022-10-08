@@ -20,6 +20,7 @@ type User struct {
 type UserJwt struct {
 	Username string
 	Nickname string
+	Email    string
 	Role     string
 }
 

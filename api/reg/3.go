@@ -45,8 +45,15 @@ func HandleStepAccount(ctx *gin.Context) {
 		return
 	}
 
-	var user model.User
-	result := MYSQL.First(&user, "username = ?", username)
+	result := MYSQL.First(&model.User{}, "username = ?", username)
+	if result.Error == nil {
+		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
+			"code":    422,
+			"message": "用户名已存在",
+		})
+		return
+	}
+	result = MYSQL.First(&model.RegFlow{}, "username = ?", username)
 	if result.Error == nil {
 		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
 			"code":    422,
@@ -76,7 +83,6 @@ func HandleStepAccount(ctx *gin.Context) {
 	}
 	state := uuidV4.String()
 
-	var regFlow model.RegFlow
 	postForm := map[string]interface{}{
 		"step":     3,
 		"username": username,
@@ -85,7 +91,7 @@ func HandleStepAccount(ctx *gin.Context) {
 		"ms_state": state,
 	}
 
-	MYSQL.Model(&regFlow).Where("serial = ?", serial).Updates(postForm)
+	MYSQL.Model(&model.RegFlow{}).Where("serial = ?", serial).Updates(postForm)
 	ctx.JSON(http.StatusOK, gin.H{
 		"code":        200,
 		"message":     "创建成功",
