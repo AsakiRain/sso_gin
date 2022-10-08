@@ -36,10 +36,15 @@ func HandleStepMs(ctx *gin.Context) {
 		return
 	}
 	clearForm := map[string]interface{}{
-		"ms_step":  0,
-		"ms_tip":   nil,
-		"ms_state": nil,
-		"ms_end":   0,
+		"ms_step":                0,
+		"ms_tip":                 nil,
+		"ms_state":               nil,
+		"ms_end":                 0,
+		"minecraft_id":           nil,
+		"minecraft_name":         nil,
+		"minecraft_skins":        nil,
+		"minecraft_capes":        nil,
+		"minecraft_entitlements": nil,
 	}
 	// 预先重置整个过程，防止上次失败的记录被再次获取
 	// 这里清空state是为了防止重复提交

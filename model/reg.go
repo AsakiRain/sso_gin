@@ -21,7 +21,7 @@ type RegFlow struct {
 	Email                 *string `json:"email"`
 	Username              *string `json:"username"`
 	Nickname              *string `json:"nickname"`
-	Pass                  *string `json:"password"`
+	Password              *string `json:"password"`
 	Salt                  *string `json:"salt"`
 	QqStep                int     `json:"qq_step" gorm:"default:0;not null"`
 	QqTip                 *string `json:"qq_tip"`
@@ -43,6 +43,13 @@ type StepEmailForm struct {
 	Email  string `json:"email" binding:"required"`
 	Code   string `json:"code" binding:"required"`
 	Serial string `json:"serial" binding:"required"`
+}
+
+type StepAccountForm struct {
+	Username string `json:"username" binding:"required"`
+	Nickname string `json:"nickname" binding:"required"`
+	Password string `json:"password" binding:"required"`
+	Serial   string `json:"serial" binding:"required"`
 }
 
 type StepMsForm struct {

@@ -16,6 +16,7 @@ func SetupRouter(router *gin.Engine) {
 		reg.GET("/0", api_reg.HandleStepStart)
 		reg.POST("/1", api_reg.HandleStepTOS)
 		reg.POST("/2", api_reg.HandleStepEmail)
+		reg.POST("/3", api_reg.HandleStepAccount)
 		reg.POST("/4", api_reg.HandleStepMs)
 		reg.GET("/4", api_reg.HandleMsQuery)
 	}

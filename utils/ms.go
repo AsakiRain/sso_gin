@@ -94,15 +94,6 @@ func LinkStart(serial string, msToken string) bool {
 	return true
 }
 
-func ToJson(msTipForm any) string {
-	// Thanks to Eson.ninja and sunalwayskonws
-	bytes, err := json.Marshal(msTipForm)
-	if err != nil {
-		panic(err)
-	}
-	return string(bytes)
-}
-
 func MsStepXbl(serial string, msToken string) (model.MsXblReturn, model.MsTipForm) {
 	// /////////////////////////
 	// Authenticate with XBL //

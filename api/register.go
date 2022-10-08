@@ -85,7 +85,7 @@ func HandleRegister(ctx *gin.Context) {
 	MYSQL.Create(&model.User{
 		Username: name,
 		Nickname: nickname,
-		Pass:     *(*string)(unsafe.Pointer(&pass)),
+		Password: *(*string)(unsafe.Pointer(&pass)),
 		Email:    email,
 	})
 	userJwt := model.UserJwt{

@@ -6,7 +6,7 @@ type User struct {
 	Uid       int     `json:"uid" gorm:"not null;primaryKey;autoIncrement"`
 	Username  string  `json:"username" gorm:"not null"`
 	Nickname  string  `json:"nickname" gorm:"not null"`
-	Pass      string  `json:"password" gorm:"not null"`
+	Password  string  `json:"password" gorm:"not null"`
 	Salt      string  `json:"salt" gorm:"not null"`
 	Email     string  `json:"email" gorm:"not null"`
 	Phone     *string `json:"phone"`
