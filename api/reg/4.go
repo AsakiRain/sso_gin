@@ -68,20 +68,27 @@ func HandleMsQuery(ctx *gin.Context) {
 	var regFlow model.RegFlow
 	MYSQL.Model(&regFlow).Where("serial = ?", serial).First(&regFlow)
 
-	var msMinecraft model.MsMinecraft
+	var minecraft model.Minecraft
 	if regFlow.MsEnd == 1 {
-		msMinecraft.MinecraftId = regFlow.MinecraftId
-		msMinecraft.MinecraftName = regFlow.MinecraftName
-		msMinecraft.MinecraftSkins = regFlow.MinecraftSkins
-		msMinecraft.MinecraftCapes = regFlow.MinecraftCapes
-		msMinecraft.MinecraftEntitlements = regFlow.MinecraftEntitlements
+		var minecraftSkins []model.MinecraftSkin
+		var minecraftCapes []model.MinecraftCape
+		var minecraftEntitlements model.MinecraftEntitlements
+		utils.ToStruct(&minecraftSkins, *regFlow.MinecraftSkins)
+		utils.ToStruct(&minecraftCapes, *regFlow.MinecraftCapes)
+		utils.ToStruct(&minecraftEntitlements, *regFlow.MinecraftEntitlements)
+
+		minecraft.MinecraftId = regFlow.MinecraftId
+		minecraft.MinecraftName = regFlow.MinecraftName
+		minecraft.MinecraftSkins = &minecraftSkins
+		minecraft.MinecraftCapes = &minecraftCapes
+		minecraft.MinecraftEntitlements = &minecraftEntitlements
 	}
 	ctx.JSON(http.StatusOK, gin.H{
-		"code":         200,
-		"message":      "查询成功",
-		"ms_step":      regFlow.MsStep,
-		"ms_tip":       regFlow.MsTip,
-		"ms_end":       regFlow.MsEnd,
-		"ms_minecraft": msMinecraft,
+		"code":      200,
+		"message":   "查询成功",
+		"ms_step":   regFlow.MsStep,
+		"ms_tip":    regFlow.MsTip,
+		"ms_end":    regFlow.MsEnd,
+		"minecraft": minecraft,
 	})
 }

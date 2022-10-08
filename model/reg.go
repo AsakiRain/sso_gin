@@ -151,29 +151,34 @@ type MsEntitlementsReturn MsEntitlementsResp
 type MsProfileForm struct{}
 
 type MsProfileResp struct {
-	Id    string `json:"id"`
-	Name  string `json:"name"`
-	Skins []struct {
-		Id      string `json:"id"`
-		State   string `json:"state"`
-		Url     string `json:"url"`
-		Variant string `json:"variant"`
-		Alias   string `json:"alias"`
-	} `json:"skins"`
-	Capes []struct {
-		Id    string `json:"id"`
-		State string `json:"state"`
-		Url   string `json:"url"`
-		Alias string `json:"alias"`
-	} `json:"capes"`
+	Id    string          `json:"id"`
+	Name  string          `json:"name"`
+	Skins []MinecraftSkin `json:"skins"`
+	Capes []MinecraftCape `json:"capes"`
 }
 
 type MsProfileReturn MsProfileResp
 
-type MsMinecraft struct {
-	MinecraftId           *string `json:"minecraft_id"`
-	MinecraftName         *string `json:"minecraft_name"`
-	MinecraftSkins        *string `json:"minecraft_skins"`
-	MinecraftCapes        *string `json:"minecraft_capes"`
-	MinecraftEntitlements *string `json:"minecraft_entitlements"`
+type Minecraft struct {
+	MinecraftId           *string                `json:"minecraft_id"`
+	MinecraftName         *string                `json:"minecraft_name"`
+	MinecraftSkins        *[]MinecraftSkin       `json:"minecraft_skins"`
+	MinecraftCapes        *[]MinecraftCape       `json:"minecraft_capes"`
+	MinecraftEntitlements *MinecraftEntitlements `json:"minecraft_entitlements"`
 }
+
+type MinecraftSkin struct {
+	Id      string `json:"id"`
+	State   string `json:"state"`
+	Url     string `json:"url"`
+	Variant string `json:"variant"`
+	Alias   string `json:"alias"`
+}
+type MinecraftCape struct {
+	Id    string `json:"id"`
+	State string `json:"state"`
+	Url   string `json:"url"`
+	Alias string `json:"alias"`
+}
+
+type MinecraftEntitlements MsEntitlementsResp

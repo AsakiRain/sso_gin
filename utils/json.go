@@ -11,8 +11,8 @@ func ToJson(form any) string {
 	return string(bytes)
 }
 
-func ParseJson(form any, jsonStr string) {
-	err := json.Unmarshal([]byte(jsonStr), form)
+func ToStruct(form any, str string) {
+	err := json.Unmarshal([]byte(str), form)
 	if err != nil {
 		panic(err)
 	}
