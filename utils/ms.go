@@ -31,7 +31,7 @@ func GenerateLinkRemake() string {
 	// return "https://login.live.com/logout.srf"
 }
 
-func GaylyPass(serial string, step int, msStepInfo model.MsTipForm) bool {
+func GailyPass(serial string, step int, msStepInfo model.MsTipForm) bool {
 	MYSQL := *db.MYSQL
 
 	commitForm := map[string]interface{}{
@@ -148,7 +148,7 @@ func MsStepXbl(serial string, msToken string) (model.MsXblReturn, model.MsTipFor
 	msTipForm.Info = "请求XBL认证成功"
 	msTipForm.Error = ""
 
-	GaylyPass(serial, 2, msTipForm)
+	GailyPass(serial, 2, msTipForm)
 	return msXblReturn, msTipForm
 }
 
@@ -198,7 +198,7 @@ func MsStepXsts(serial string, msXblReturn model.MsXblReturn) (model.MsXstsRetur
 	msTipForm.Info = "请求XSTS认证成功"
 	msTipForm.Error = ""
 
-	GaylyPass(serial, 3, msTipForm)
+	GailyPass(serial, 3, msTipForm)
 	return msXstsReturn, msTipForm
 }
 
@@ -240,7 +240,7 @@ func MsStepMinecraft(serial string, msXstsReturn model.MsXstsReturn) (model.MsMi
 	msTipForm.Info = "请求Minecraft认证成功"
 	msTipForm.Error = ""
 
-	GaylyPass(serial, 4, msTipForm)
+	GailyPass(serial, 4, msTipForm)
 	return msMinecraftReturn, msTipForm
 }
 
@@ -276,7 +276,7 @@ func MsStepEntitlements(serial string, msMinecraftReturn model.MsMinecraftReturn
 	msTipForm.Info = "请求Minecraft Entitlements成功"
 	msTipForm.Error = ""
 
-	GaylyPass(serial, 5, msTipForm)
+	GailyPass(serial, 5, msTipForm)
 	return msEntitlementsReturn, msTipForm
 }
 
@@ -312,6 +312,6 @@ func MsStepProfile(serial string, msMinecraftReturn model.MsMinecraftReturn) (mo
 	msTipForm.Info = "请求Minecraft Profile成功"
 	msTipForm.Error = ""
 
-	GaylyPass(serial, 6, msTipForm)
+	GailyPass(serial, 6, msTipForm)
 	return msProfileReturn, msTipForm
 }
