@@ -24,7 +24,7 @@ func HandleStepEmail(ctx *gin.Context) {
 		})
 		return
 	}
-	email := stepEmailForm.Email
+	email := strings.ToLower(stepEmailForm.Email)
 	code := strings.ToUpper(stepEmailForm.Code)
 	serial := stepEmailForm.Serial
 

@@ -7,6 +7,7 @@ import (
 	"sso_gin/db"
 	"sso_gin/model"
 	"sso_gin/utils"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
@@ -25,7 +26,7 @@ func HandleStepAccount(ctx *gin.Context) {
 		})
 		return
 	}
-	username := stepAccountForm.Username
+	username := strings.ToLower(stepAccountForm.Username)
 	nickname := stepAccountForm.Nickname
 	password := stepAccountForm.Password
 	serial := stepAccountForm.Serial

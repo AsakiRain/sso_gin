@@ -6,6 +6,7 @@ import (
 	"sso_gin/db"
 	"sso_gin/model"
 	"sso_gin/utils"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -23,7 +24,7 @@ func HandleSendCode(ctx *gin.Context) {
 		})
 		return
 	}
-	email := emailForm.Email
+	email := strings.ToLower(emailForm.Email)
 	cdKey := fmt.Sprintf("email_cd_%s", email)
 	x, found := CACHE.Get(cdKey)
 	if found {
@@ -31,7 +32,7 @@ func HandleSendCode(ctx *gin.Context) {
 		if cdAt > time.Now().Unix() {
 			ctx.JSON(http.StatusUnprocessableEntity, gin.H{
 				"code":    422,
-				"message": fmt.Sprintf("操作过于频繁，请在%d秒后重试", cdAt-time.Now().Unix()),
+				"message": fmt.Sprintf("操作频繁，请在%d秒后重试", cdAt-time.Now().Unix()),
 			})
 			return
 		}
