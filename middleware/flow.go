@@ -51,6 +51,10 @@ func FlowCheck() gin.HandlerFunc {
 			return
 		}
 		yourStep := ctx.Request.URL.Path[len("/reg/flow/"):]
+		if yourStep == "4" && ctx.Request.Method == "GET" {
+			ctx.Next()
+			return
+		}
 		myStep := fmt.Sprintf("%d", regFlow.Step+1)
 		if yourStep != myStep {
 			ctx.JSON(http.StatusUnprocessableEntity, gin.H{
