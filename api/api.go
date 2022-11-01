@@ -2,6 +2,7 @@ package api
 
 import (
 	api_email "sso_gin/api/email"
+	api_login "sso_gin/api/login"
 	api_reg "sso_gin/api/reg"
 	api_user "sso_gin/api/user"
 	"sso_gin/middleware"
@@ -20,7 +21,7 @@ func SetupRouter(router *gin.Engine) {
 		reg.POST("/4", api_reg.HandleStepMs)
 		reg.GET("/4", api_reg.HandleMsQuery)
 		reg.POST("/5", api_reg.HandleStepQq)
-		reg.GET("/6", api_reg.HandleStepPerference)
+		reg.GET("/6", api_reg.HandleStepPreference)
 		reg.GET("/7", api_reg.HandleStepDone)
 	}
 	user := router.Group("/user", middleware.JwtAuth())
@@ -31,4 +32,5 @@ func SetupRouter(router *gin.Engine) {
 	{
 		email.GET("/code", api_email.HandleSendCode)
 	}
+	router.GET("/login", api_login.HandleLogin)
 }
