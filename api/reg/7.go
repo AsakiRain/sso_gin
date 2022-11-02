@@ -49,12 +49,15 @@ func HandleStepDone(ctx *gin.Context) {
 			"code":    500,
 			"message": "jwt token生成失败",
 			"detail":  err.Error(),
+			"data":    nil,
 		})
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{
 		"code":    200,
 		"message": "注册成功",
-		"token":   jwtToken,
+		"data": map[string]interface{}{
+			"token": jwtToken,
+		},
 	})
 }

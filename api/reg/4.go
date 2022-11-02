@@ -18,6 +18,7 @@ func HandleStepMs(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"code":    400,
 			"message": "参数错误",
+			"data":    nil,
 		})
 		return
 	}
@@ -32,6 +33,7 @@ func HandleStepMs(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
 			"code":    422,
 			"message": "state不匹配",
+			"data":    nil,
 		})
 		return
 	}
@@ -55,6 +57,7 @@ func HandleStepMs(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"code":    200,
 		"message": "流程启动",
+		"data":    nil,
 	})
 }
 
@@ -84,11 +87,13 @@ func HandleMsQuery(ctx *gin.Context) {
 		msMinecraft.MinecraftEntitlements = &minecraftEntitlements
 	}
 	ctx.JSON(http.StatusOK, gin.H{
-		"code":      200,
-		"message":   "查询成功",
-		"ms_step":   regFlow.MsStep,
-		"ms_tip":    regFlow.MsTip,
-		"ms_end":    regFlow.MsEnd,
-		"minecraft": msMinecraft,
+		"code":    200,
+		"message": "查询成功",
+		"data": map[string]interface{}{
+			"ms_step":   regFlow.MsStep,
+			"ms_tip":    regFlow.MsTip,
+			"ms_end":    regFlow.MsEnd,
+			"minecraft": msMinecraft,
+		},
 	})
 }

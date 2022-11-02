@@ -18,6 +18,7 @@ func HandleStepTOS(ctx *gin.Context) {
 			"code":    400,
 			"message": "参数错误",
 			"detail":  err.Error(),
+			"data":    nil,
 		})
 		return
 	}
@@ -29,6 +30,7 @@ func HandleStepTOS(ctx *gin.Context) {
 			"code":    422,
 			"message": "请同意服务条款",
 			"detail":  "我叼你妈，你直接发包是吧",
+			"data":    nil,
 		})
 		return
 	}
@@ -41,6 +43,8 @@ func HandleStepTOS(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"code":    200,
 		"message": "验证成功",
-		"url":     "/reg/flow/2",
+		"data": map[string]interface{}{
+			"url": "/reg/flow/2",
+		},
 	})
 }

@@ -2,6 +2,7 @@ package api_login
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"sso_gin/db"
@@ -12,11 +13,12 @@ import (
 func HandleLogin(ctx *gin.Context) {
 	MYSQL := *db.MYSQL
 	var loginForm model.LoginForm
-	err := ctx.ShouldBindJSON(&loginForm)
+	err := ctx.ShouldBindBodyWith(&loginForm, binding.JSON)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"code":    400,
 			"message": "参数错误",
+			"data":    nil,
 		})
 		return
 	}
@@ -30,6 +32,7 @@ func HandleLogin(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
 			"code":    422,
 			"message": "账号不存在",
+			"data":    nil,
 		})
 		return
 	}
@@ -41,6 +44,7 @@ func HandleLogin(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
 			"code":    422,
 			"message": "密码错误",
+			"data":    nil,
 		})
 		return
 	}
@@ -56,12 +60,15 @@ func HandleLogin(ctx *gin.Context) {
 			"code":    500,
 			"message": "什么动静",
 			"detail":  err.Error(),
+			"data":    nil,
 		})
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{
 		"code":    200,
 		"message": "登录成功",
-		"token":   jwtToken,
+		"data": map[string]interface{}{
+			"token": jwtToken,
+		},
 	})
 }
