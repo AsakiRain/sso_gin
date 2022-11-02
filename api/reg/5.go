@@ -25,6 +25,8 @@ func HandleStepQq(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"code":    200,
 		"message": "TODO",
-		"url":     "/reg/flow/6",
+		"data": map[string]interface{}{
+			"url": "/reg/flow/6",
+		},
 	})
 }

@@ -17,7 +17,9 @@ func HandleStepStart(ctx *gin.Context) {
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"code":    500,
-			"message": "服务器错误",
+			"message": "什么动静",
+			"detail":  err.Error(),
+			"data":    nil,
 		})
 		log.Printf("未能产生uuid：%v", err)
 		return
@@ -29,6 +31,8 @@ func HandleStepStart(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"code":    200,
 		"message": "流程启动",
-		"serial":  serial,
+		"data": map[string]interface{}{
+			"serial": serial,
+		},
 	})
 }

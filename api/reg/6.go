@@ -25,6 +25,8 @@ func HandleStepPreference(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"code":    200,
 		"message": "TODO",
-		"url":     "/reg/flow/7",
+		"data": map[string]interface{}{
+			"url": "/reg/flow/7",
+		},
 	})
 }

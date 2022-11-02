@@ -21,6 +21,7 @@ func HandleSendCode(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"code":    400,
 			"message": "参数错误",
+			"data":    nil,
 		})
 		return
 	}
@@ -33,6 +34,7 @@ func HandleSendCode(ctx *gin.Context) {
 			ctx.JSON(http.StatusUnprocessableEntity, gin.H{
 				"code":    422,
 				"message": fmt.Sprintf("操作频繁，请在%d秒后重试", cdAt-time.Now().Unix()),
+				"data":    nil,
 			})
 			return
 		}
@@ -44,6 +46,7 @@ func HandleSendCode(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
 			"code":    422,
 			"message": "邮箱已经注册",
+			"data":    nil,
 		})
 		return
 	}
@@ -64,6 +67,7 @@ func HandleSendCode(ctx *gin.Context) {
 			"code":    500,
 			"message": "发件失败",
 			"detail":  err.Error(),
+			"data":    nil,
 		})
 		return
 	}
@@ -73,6 +77,7 @@ func HandleSendCode(ctx *gin.Context) {
 			"code":    500,
 			"message": "发件失败",
 			"detail":  err.Error(),
+			"data":    nil,
 		})
 		return
 	}
@@ -81,5 +86,6 @@ func HandleSendCode(ctx *gin.Context) {
 		"code":    200,
 		"message": "发送成功",
 		"detail":  fmt.Sprintf("耗时%f秒", endTime.Sub(startTime).Seconds()),
+		"data":    nil,
 	})
 }

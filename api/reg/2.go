@@ -21,6 +21,7 @@ func HandleStepEmail(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"code":    400,
 			"message": "参数错误",
+			"data":    nil,
 		})
 		return
 	}
@@ -33,6 +34,7 @@ func HandleStepEmail(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
 			"code":    422,
 			"message": "验证码错误",
+			"data":    nil,
 		})
 		return
 	}
@@ -48,6 +50,8 @@ func HandleStepEmail(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"code":    200,
 		"message": "验证成功",
-		"url":     "/reg/flow/3",
+		"data": map[string]interface{}{
+			"url": "/reg/flow/3",
+		},
 	})
 }

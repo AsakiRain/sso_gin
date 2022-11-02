@@ -23,6 +23,7 @@ func HandleStepAccount(ctx *gin.Context) {
 		ctx.JSON(400, gin.H{
 			"code":    400,
 			"message": "参数错误",
+			"data":    nil,
 		})
 		return
 	}
@@ -35,6 +36,7 @@ func HandleStepAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
 			"code":    422,
 			"message": "用户名格式错误",
+			"data":    nil,
 		})
 		return
 	}
@@ -42,6 +44,7 @@ func HandleStepAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
 			"code":    422,
 			"message": "密码格式错误",
+			"data":    nil,
 		})
 		return
 	}
@@ -51,6 +54,7 @@ func HandleStepAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
 			"code":    422,
 			"message": "用户名已存在",
+			"data":    nil,
 		})
 		return
 	}
@@ -59,6 +63,7 @@ func HandleStepAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
 			"code":    422,
 			"message": "用户名已存在",
+			"data":    nil,
 		})
 		return
 	}
@@ -69,6 +74,7 @@ func HandleStepAccount(ctx *gin.Context) {
 			"code":    500,
 			"message": "什么动静",
 			"detail":  err.Error(),
+			"data":    nil,
 		})
 		return
 	}
@@ -77,7 +83,9 @@ func HandleStepAccount(ctx *gin.Context) {
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"code":    500,
-			"message": "服务器错误",
+			"message": "什么动静",
+			"detail":  err.Error(),
+			"data":    nil,
 		})
 		log.Printf("未能产生uuid：%v", err)
 		return
@@ -94,10 +102,12 @@ func HandleStepAccount(ctx *gin.Context) {
 
 	MYSQL.Model(&model.RegFlow{}).Where("serial = ?", serial).Updates(postForm)
 	ctx.JSON(http.StatusOK, gin.H{
-		"code":        200,
-		"message":     "创建成功",
-		"url":         "/reg/flow/4",
-		"link_start":  utils.GenerateLinkStart(state),
-		"link_remake": utils.GenerateLinkRemake(),
+		"code":    200,
+		"message": "创建成功",
+		"data": map[string]interface{}{
+			"url":         "/reg/flow/4",
+			"link_start":  utils.GenerateLinkStart(state),
+			"link_remake": utils.GenerateLinkRemake(),
+		},
 	})
 }

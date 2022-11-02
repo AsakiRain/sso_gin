@@ -18,6 +18,7 @@ func HandleUserInfo(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnauthorized, gin.H{
 			"code": 401,
 			"msg":  "token过期",
+			"data": nil,
 		})
 		return
 	}
@@ -28,6 +29,7 @@ func HandleUserInfo(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
 			"code": 422,
 			"msg":  "用户不存在",
+			"data": nil,
 		})
 		return
 	}
