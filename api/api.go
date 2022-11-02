@@ -11,7 +11,6 @@ import (
 )
 
 func SetupRouter(router *gin.Engine) {
-	router.POST("/register", HandleRegister)
 	reg := router.Group("/reg/flow", middleware.FlowCheck())
 	{
 		reg.GET("/0", api_reg.HandleStepStart)
@@ -32,5 +31,5 @@ func SetupRouter(router *gin.Engine) {
 	{
 		email.GET("/code", api_email.HandleSendCode)
 	}
-	router.GET("/login", api_login.HandleLogin)
+	router.POST("/login", api_login.HandleLogin)
 }
