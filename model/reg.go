@@ -1,33 +1,36 @@
 package model
 
 import (
+	"time"
+
 	"github.com/go-resty/resty/v2"
+	"gorm.io/gorm"
 )
 
 type RegFlow struct {
-	Serial                string  `json:"serial" gorm:"not null"`
-	Step                  int     `json:"step" gorm:"default:0;not null"`
-	Log                   *string `json:"log"`
-	MsStep                int     `json:"ms_step" gorm:"default:0;not null"`
-	MsTip                 *string `json:"ms_tip"`
-	MsEnd                 int     `json:"ms_end" gorm:"default:0;not null"`
-	MsState               *string `json:"ms_state"`
-	MinecraftId           *string `json:"minecraft_id"`
-	MinecraftName         *string `json:"minecraft_name"`
-	MinecraftSkins        *string `json:"minecraft_skins"`
-	MinecraftCapes        *string `json:"minecraft_capes"`
-	MinecraftEntitlements *string `json:"minecraft_entitlements"`
-	AcceptTos             *bool   `json:"accept_tos" gorm:"default:false;not null"`
-	Email                 *string `json:"email"`
-	Username              *string `json:"username"`
-	Nickname              *string `json:"nickname"`
-	Password              *string `json:"password"`
-	Salt                  *string `json:"salt"`
-	QqStep                int     `json:"qq_step" gorm:"default:0;not null"`
-	QqTip                 *string `json:"qq_tip"`
-	CreatedAt             int64   `json:"created_at" gorm:"autoCreateTime;not null"`
-	UpdatedAt             int64   `json:"updated_at" gorm:"autoUpdateTime;not null"`
-	DeletedAt             *int64  `json:"deleted_at"`
+	Serial                string         `json:"serial" gorm:"not null"`
+	Step                  int            `json:"step" gorm:"default:0;not null"`
+	Log                   *string        `json:"log"`
+	MsStep                int            `json:"ms_step" gorm:"default:0;not null"`
+	MsTip                 *string        `json:"ms_tip"`
+	MsEnd                 int            `json:"ms_end" gorm:"default:0;not null"`
+	MsState               *string        `json:"ms_state"`
+	MinecraftId           *string        `json:"minecraft_id"`
+	MinecraftName         *string        `json:"minecraft_name"`
+	MinecraftSkins        *string        `json:"minecraft_skins"`
+	MinecraftCapes        *string        `json:"minecraft_capes"`
+	MinecraftEntitlements *string        `json:"minecraft_entitlements"`
+	AcceptTos             *bool          `json:"accept_tos" gorm:"default:false;not null"`
+	Email                 *string        `json:"email"`
+	Username              *string        `json:"username"`
+	Nickname              *string        `json:"nickname"`
+	Password              *string        `json:"password"`
+	Salt                  *string        `json:"salt"`
+	QqStep                int            `json:"qq_step" gorm:"default:0;not null"`
+	QqTip                 *string        `json:"qq_tip"`
+	CreatedAt             time.Time      `json:"created_at" gorm:"autoCreateTime;not null"`
+	UpdatedAt             time.Time      `json:"updated_at" gorm:"autoUpdateTime;not null"`
+	DeletedAt             gorm.DeletedAt `json:"deleted_at"`
 }
 
 type SerialForm struct {
