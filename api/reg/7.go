@@ -35,7 +35,16 @@ func HandleStepDone(ctx *gin.Context) {
 		Salt:     salt,
 		Role:     role,
 	}
+	minecraft := model.Minecraft{
+		Username:     username,
+		Uuid:         *regFlow.MinecraftId,
+		Name:         *regFlow.MinecraftName,
+		Skins:        *regFlow.MinecraftSkins,
+		Capes:        *regFlow.MinecraftCapes,
+		Entitlements: *regFlow.MinecraftEntitlements,
+	}
 	MYSQL.Create(&user)
+	MYSQL.Create(&minecraft)
 
 	userJwt := model.UserJwt{
 		Username: username,
