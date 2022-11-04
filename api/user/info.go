@@ -23,8 +23,8 @@ func HandleUserInfo(ctx *gin.Context) {
 		return
 	}
 	log.Println(claims)
-	var user model.User
-	result := MYSQL.First(&user, "username = ?", claims.UserJwt.Username)
+	var userInfo model.UserInfo
+	result := MYSQL.Model(&model.User{}).First(&userInfo, "username = ?", claims.UserJwt.Username)
 	if result.Error != nil {
 		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
 			"code": 422,
@@ -36,6 +36,6 @@ func HandleUserInfo(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"code": 200,
 		"msg":  "获取用户信息成功",
-		"data": user,
+		"data": userInfo,
 	})
 }
