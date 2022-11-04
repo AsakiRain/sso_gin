@@ -72,6 +72,10 @@ func HandleMsQuery(ctx *gin.Context) {
 	MYSQL.Model(&regFlow).Where("serial = ?", serial).First(&regFlow)
 
 	var msMinecraft model.MsMinecraft
+	var msTip model.MsTip
+	if regFlow.MsTip != nil {
+		utils.ToStruct(&msTip, *regFlow.MsTip)
+	}
 	if regFlow.MsEnd == 1 {
 		var minecraftSkins []model.MinecraftSkin
 		var minecraftCapes []model.MinecraftCape
@@ -91,7 +95,7 @@ func HandleMsQuery(ctx *gin.Context) {
 		"message": "查询成功",
 		"data": map[string]interface{}{
 			"ms_step":   regFlow.MsStep,
-			"ms_tip":    regFlow.MsTip,
+			"ms_tip":    msTip,
 			"ms_end":    regFlow.MsEnd,
 			"minecraft": msMinecraft,
 		},
