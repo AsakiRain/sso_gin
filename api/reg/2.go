@@ -31,7 +31,7 @@ func HandleStepEmail(ctx *gin.Context) {
 
 	valid := utils.CheckCode(email, code)
 	if !valid {
-		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
+		ctx.JSON(http.StatusOK, gin.H{
 			"code":    422,
 			"message": "验证码错误",
 			"data":    nil,

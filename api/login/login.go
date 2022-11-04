@@ -1,13 +1,14 @@
 package api_login
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/gin-gonic/gin/binding"
-	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"sso_gin/db"
 	"sso_gin/model"
 	"sso_gin/utils"
+
+	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func HandleLogin(ctx *gin.Context) {
@@ -29,7 +30,7 @@ func HandleLogin(ctx *gin.Context) {
 	var user model.User
 	result := MYSQL.First(&user, "username = ?", username)
 	if result.Error != nil {
-		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
+		ctx.JSON(http.StatusOK, gin.H{
 			"code":    422,
 			"message": "账号不存在",
 			"data":    nil,
@@ -41,7 +42,7 @@ func HandleLogin(ctx *gin.Context) {
 	role := user.Role
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
-		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
+		ctx.JSON(http.StatusOK, gin.H{
 			"code":    422,
 			"message": "密码错误",
 			"data":    nil,
@@ -56,10 +57,9 @@ func HandleLogin(ctx *gin.Context) {
 	}
 	jwtToken, err := utils.GenerateToken(userJwt)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{
+		ctx.JSON(http.StatusOK, gin.H{
 			"code":    500,
-			"message": "什么动静",
-			"detail":  err.Error(),
+			"message": err.Error(),
 			"data":    nil,
 		})
 		return

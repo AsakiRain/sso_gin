@@ -1,6 +1,7 @@
 package api_reg
 
 import (
+	"fmt"
 	"net/http"
 	"sso_gin/db"
 	"sso_gin/model"
@@ -54,10 +55,9 @@ func HandleStepDone(ctx *gin.Context) {
 	}
 	jwtToken, err := utils.GenerateToken(userJwt)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{
+		ctx.JSON(http.StatusOK, gin.H{
 			"code":    500,
-			"message": "jwt token生成失败",
-			"detail":  err.Error(),
+			"message": fmt.Sprintf("生成token失败: %v", err),
 			"data":    nil,
 		})
 		return

@@ -1,6 +1,7 @@
 package api_reg
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"sso_gin/constant"
@@ -51,7 +52,7 @@ func HandleStepAccount(ctx *gin.Context) {
 
 	result := MYSQL.First(&model.User{}, "username = ?", username)
 	if result.Error == nil {
-		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
+		ctx.JSON(http.StatusOK, gin.H{
 			"code":    422,
 			"message": "用户名已存在",
 			"data":    nil,
@@ -60,7 +61,7 @@ func HandleStepAccount(ctx *gin.Context) {
 	}
 	result = MYSQL.First(&model.RegFlow{}, "username = ?", username)
 	if result.Error == nil {
-		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
+		ctx.JSON(http.StatusOK, gin.H{
 			"code":    422,
 			"message": "用户名已存在",
 			"data":    nil,
@@ -70,10 +71,9 @@ func HandleStepAccount(ctx *gin.Context) {
 
 	pass, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{
+		ctx.JSON(http.StatusOK, gin.H{
 			"code":    500,
-			"message": "什么动静",
-			"detail":  err.Error(),
+			"message": fmt.Sprintf("密码加密失败: %s", err.Error()),
 			"data":    nil,
 		})
 		return
@@ -81,10 +81,9 @@ func HandleStepAccount(ctx *gin.Context) {
 
 	uuidV4, err := uuid.NewV4()
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{
+		ctx.JSON(http.StatusOK, gin.H{
 			"code":    500,
-			"message": "什么动静",
-			"detail":  err.Error(),
+			"message": fmt.Sprintf("uuid生成失败: %s", err.Error()),
 			"data":    nil,
 		})
 		log.Printf("未能产生uuid：%v", err)

@@ -17,7 +17,6 @@ func HandleStepTOS(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"code":    400,
 			"message": "参数错误",
-			"detail":  err.Error(),
 			"data":    nil,
 		})
 		return
@@ -28,8 +27,7 @@ func HandleStepTOS(ctx *gin.Context) {
 	if !*acceptTos {
 		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
 			"code":    422,
-			"message": "请同意服务条款",
-			"detail":  "我叼你妈，你直接发包是吧",
+			"message": "你怎么直接发包啊（恼）",
 			"data":    nil,
 		})
 		return

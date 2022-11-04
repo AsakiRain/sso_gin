@@ -1,6 +1,7 @@
 package api_reg
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"sso_gin/db"
@@ -15,13 +16,12 @@ func HandleStepStart(ctx *gin.Context) {
 
 	uuidV4, err := uuid.NewV4()
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{
+		ctx.JSON(http.StatusOK, gin.H{
 			"code":    500,
-			"message": "什么动静",
-			"detail":  err.Error(),
+			"message": fmt.Sprintf("uuid生成失败: %s", err.Error()),
 			"data":    nil,
 		})
-		log.Printf("未能产生uuid：%v", err)
+		log.Printf("uuid生成失败：%v", err)
 		return
 	}
 	serial := uuidV4.String()

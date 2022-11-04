@@ -31,7 +31,7 @@ func HandleSendCode(ctx *gin.Context) {
 	if found {
 		cdAt := x.(int64)
 		if cdAt > time.Now().Unix() {
-			ctx.JSON(http.StatusUnprocessableEntity, gin.H{
+			ctx.JSON(http.StatusOK, gin.H{
 				"code":    422,
 				"message": fmt.Sprintf("操作频繁，请在%d秒后重试", cdAt-time.Now().Unix()),
 				"data":    nil,
@@ -43,7 +43,7 @@ func HandleSendCode(ctx *gin.Context) {
 	var userInfo model.UserInfo
 	result := MYSQL.First(&userInfo, "email = ?", email)
 	if result.Error == nil {
-		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
+		ctx.JSON(http.StatusOK, gin.H{
 			"code":    422,
 			"message": "邮箱已经注册",
 			"data":    nil,
@@ -63,20 +63,18 @@ func HandleSendCode(ctx *gin.Context) {
 	startTime := time.Now()
 	mailBody, err := utils.ParseTemplate("captcha.html", map[string]interface{}{"code": code, "ip": ctx.ClientIP()})
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{
+		ctx.JSON(http.StatusOK, gin.H{
 			"code":    500,
-			"message": "发件失败",
-			"detail":  err.Error(),
+			"message": fmt.Sprintf("发件失败：%s", err.Error()),
 			"data":    nil,
 		})
 		return
 	}
 	err = utils.SendMail(email, "注册验证码", mailBody)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{
+		ctx.JSON(http.StatusOK, gin.H{
 			"code":    500,
-			"message": "发件失败",
-			"detail":  err.Error(),
+			"message": fmt.Sprintf("发件失败：%s", err.Error()),
 			"data":    nil,
 		})
 		return
@@ -84,8 +82,7 @@ func HandleSendCode(ctx *gin.Context) {
 	endTime := time.Now()
 	ctx.JSON(http.StatusOK, gin.H{
 		"code":    200,
-		"message": "发送成功",
-		"detail":  fmt.Sprintf("耗时%f秒", endTime.Sub(startTime).Seconds()),
+		"message": fmt.Sprintf("发送成功，耗时%f秒", endTime.Sub(startTime).Seconds()),
 		"data":    nil,
 	})
 }

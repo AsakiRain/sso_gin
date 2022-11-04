@@ -30,7 +30,7 @@ func HandleStepMs(ctx *gin.Context) {
 	MYSQL.First(&regFlow, "serial = ?", serial)
 	// 这里不用判断记录是否存在，因为中间件会检查的
 	if regFlow.MsState == nil || *regFlow.MsState != msState {
-		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
+		ctx.JSON(http.StatusOK, gin.H{
 			"code":    422,
 			"message": "state不匹配",
 			"data":    nil,
