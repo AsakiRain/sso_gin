@@ -21,8 +21,8 @@ func HandleStepAccount(ctx *gin.Context) {
 	var stepAccountForm model.StepAccountForm
 	err := ctx.ShouldBindBodyWith(&stepAccountForm, binding.JSON)
 	if err != nil {
-		ctx.JSON(400, gin.H{
-			"code":    400,
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"code":    40001,
 			"message": "参数错误",
 			"data":    nil,
 		})
@@ -34,16 +34,16 @@ func HandleStepAccount(ctx *gin.Context) {
 	serial := stepAccountForm.Serial
 
 	if !utils.CheckRegxp(username, constant.RegUsername) {
-		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
-			"code":    422,
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"code":    40002,
 			"message": "用户名格式错误",
 			"data":    nil,
 		})
 		return
 	}
 	if !utils.CheckRegxp(password, constant.RegPassword) {
-		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
-			"code":    422,
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"code":    40002,
 			"message": "密码格式错误",
 			"data":    nil,
 		})
@@ -53,17 +53,19 @@ func HandleStepAccount(ctx *gin.Context) {
 	result := MYSQL.First(&model.User{}, "username = ?", username)
 	if result.Error == nil {
 		ctx.JSON(http.StatusOK, gin.H{
-			"code":    422,
+			"code":    42202,
 			"message": "用户名已存在",
 			"data":    nil,
 		})
 		return
 	}
+
+	// 如果注册流程中断，重新注册，需要删除之前的注册流程
 	result = MYSQL.First(&model.RegFlow{}, "username = ?", username)
 	if result.Error == nil {
 		ctx.JSON(http.StatusOK, gin.H{
-			"code":    422,
-			"message": "用户名已存在",
+			"code":    42202,
+			"message": "用户名已经在注册流程中",
 			"data":    nil,
 		})
 		return
@@ -71,8 +73,8 @@ func HandleStepAccount(ctx *gin.Context) {
 
 	pass, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		ctx.JSON(http.StatusOK, gin.H{
-			"code":    500,
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"code":    50000,
 			"message": fmt.Sprintf("密码加密失败: %s", err.Error()),
 			"data":    nil,
 		})
@@ -81,8 +83,8 @@ func HandleStepAccount(ctx *gin.Context) {
 
 	uuidV4, err := uuid.NewV4()
 	if err != nil {
-		ctx.JSON(http.StatusOK, gin.H{
-			"code":    500,
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"code":    50000,
 			"message": fmt.Sprintf("uuid生成失败: %s", err.Error()),
 			"data":    nil,
 		})
@@ -101,7 +103,7 @@ func HandleStepAccount(ctx *gin.Context) {
 
 	MYSQL.Model(&model.RegFlow{}).Where("serial = ?", serial).Updates(postForm)
 	ctx.JSON(http.StatusOK, gin.H{
-		"code":    200,
+		"code":    20000,
 		"message": "创建成功",
 		"data": map[string]interface{}{
 			"url":         "/reg/flow/4",

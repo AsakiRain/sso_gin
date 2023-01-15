@@ -17,7 +17,7 @@ func HandleLogin(ctx *gin.Context) {
 	err := ctx.ShouldBindBodyWith(&loginForm, binding.JSON)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
-			"code":    400,
+			"code":    40001,
 			"message": "参数错误",
 			"data":    nil,
 		})
@@ -31,7 +31,7 @@ func HandleLogin(ctx *gin.Context) {
 	result := MYSQL.First(&user, "username = ?", username)
 	if result.Error != nil {
 		ctx.JSON(http.StatusOK, gin.H{
-			"code":    422,
+			"code":    42201,
 			"message": "账号不存在",
 			"data":    nil,
 		})
@@ -43,7 +43,7 @@ func HandleLogin(ctx *gin.Context) {
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
 		ctx.JSON(http.StatusOK, gin.H{
-			"code":    422,
+			"code":    42203,
 			"message": "密码错误",
 			"data":    nil,
 		})
@@ -57,15 +57,15 @@ func HandleLogin(ctx *gin.Context) {
 	}
 	jwtToken, err := utils.GenerateToken(userJwt)
 	if err != nil {
-		ctx.JSON(http.StatusOK, gin.H{
-			"code":    500,
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"code":    50000,
 			"message": err.Error(),
 			"data":    nil,
 		})
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{
-		"code":    200,
+		"code":    20000,
 		"message": "登录成功",
 		"data": map[string]interface{}{
 			"token": jwtToken,

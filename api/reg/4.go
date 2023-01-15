@@ -16,7 +16,7 @@ func HandleStepMs(ctx *gin.Context) {
 	err := ctx.ShouldBindBodyWith(&stepMsForm, binding.JSON)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
-			"code":    400,
+			"code":    40001,
 			"message": "参数错误",
 			"data":    nil,
 		})
@@ -31,7 +31,7 @@ func HandleStepMs(ctx *gin.Context) {
 	// 这里不用判断记录是否存在，因为中间件会检查的
 	if regFlow.MsState == nil || *regFlow.MsState != msState {
 		ctx.JSON(http.StatusOK, gin.H{
-			"code":    422,
+			"code":    42210,
 			"message": "state不匹配",
 			"data":    nil,
 		})
@@ -55,7 +55,7 @@ func HandleStepMs(ctx *gin.Context) {
 	go utils.LinkStart(serial, msToken)
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"code":    200,
+		"code":    20000,
 		"message": "流程启动",
 		"data":    nil,
 	})
@@ -91,7 +91,7 @@ func HandleMsQuery(ctx *gin.Context) {
 		msMinecraft.MinecraftEntitlements = &minecraftEntitlements
 	}
 	ctx.JSON(http.StatusOK, gin.H{
-		"code":    200,
+		"code":    20000,
 		"message": "查询成功",
 		"data": map[string]interface{}{
 			"ms_step":   regFlow.MsStep,

@@ -15,7 +15,7 @@ func HandleStepTOS(ctx *gin.Context) {
 	err := ctx.ShouldBindBodyWith(&stepTOSForm, binding.JSON)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
-			"code":    400,
+			"code":    40001,
 			"message": "参数错误",
 			"data":    nil,
 		})
@@ -26,8 +26,8 @@ func HandleStepTOS(ctx *gin.Context) {
 
 	if !*acceptTos {
 		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
-			"code":    422,
-			"message": "你怎么直接发包啊（恼）",
+			"code":    40002,
+			"message": "参数检查不通过",
 			"data":    nil,
 		})
 		return
@@ -39,7 +39,7 @@ func HandleStepTOS(ctx *gin.Context) {
 	}
 	MYSQL.Model(&model.RegFlow{}).Where("serial = ?", serial).Updates(postForm)
 	ctx.JSON(http.StatusOK, gin.H{
-		"code":    200,
+		"code":    20000,
 		"message": "验证成功",
 		"data": map[string]interface{}{
 			"url": "/reg/flow/2",
