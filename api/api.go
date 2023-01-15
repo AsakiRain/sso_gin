@@ -29,7 +29,7 @@ func SetupRouter(router *gin.Engine) {
 	}
 	email := router.Group("/email")
 	{
-		email.GET("/code", api_email.HandleSendCode)
+		email.POST("/code", api_email.HandleSendCode)
 	}
 	router.POST("/login", api_login.HandleLogin)
 }

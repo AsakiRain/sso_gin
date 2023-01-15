@@ -3,6 +3,7 @@ package api_email
 import (
 	"fmt"
 	"net/http"
+	"sso_gin/constant"
 	"sso_gin/db"
 	"sso_gin/model"
 	"sso_gin/utils"
@@ -25,7 +26,18 @@ func HandleSendCode(ctx *gin.Context) {
 		})
 		return
 	}
+
 	email := strings.ToLower(emailForm.Email)
+
+	if !utils.CheckRegxp(email, constant.RegEmail) {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"code":    40002,
+			"message": "邮箱格式错误",
+			"data":    nil,
+		})
+		return
+	}
+
 	cdKey := fmt.Sprintf("email_cd_%s", email)
 	x, found := CACHE.Get(cdKey)
 	if found {
