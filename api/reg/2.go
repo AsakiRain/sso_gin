@@ -19,7 +19,7 @@ func HandleStepEmail(ctx *gin.Context) {
 	err := ctx.ShouldBindBodyWith(&stepEmailForm, binding.JSON)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
-			"code":    400,
+			"code":    40001,
 			"message": "参数错误",
 			"data":    nil,
 		})
@@ -32,8 +32,8 @@ func HandleStepEmail(ctx *gin.Context) {
 	valid := utils.CheckCode(email, code)
 	if !valid {
 		ctx.JSON(http.StatusOK, gin.H{
-			"code":    422,
-			"message": "验证码错误",
+			"code":    42206,
+			"message": "邮箱验证码错误",
 			"data":    nil,
 		})
 		return
@@ -48,7 +48,7 @@ func HandleStepEmail(ctx *gin.Context) {
 	MYSQL.Model(&model.RegFlow{}).Where("serial = ?", serial).Updates(updateForm)
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"code":    200,
+		"code":    20000,
 		"message": "验证成功",
 		"data": map[string]interface{}{
 			"url": "/reg/flow/3",

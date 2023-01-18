@@ -16,7 +16,7 @@ func HandleUserInfo(ctx *gin.Context) {
 	claims, err := utils.ParseToken(auth)
 	if err != nil {
 		ctx.JSON(http.StatusUnauthorized, gin.H{
-			"code": 401,
+			"code": 40103,
 			"msg":  "token过期",
 			"data": nil,
 		})
@@ -26,15 +26,15 @@ func HandleUserInfo(ctx *gin.Context) {
 	var userInfo model.UserInfo
 	result := MYSQL.Model(&model.User{}).First(&userInfo, "username = ?", claims.UserJwt.Username)
 	if result.Error != nil {
-		ctx.JSON(http.StatusUnprocessableEntity, gin.H{
-			"code": 422,
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"code": 42201,
 			"msg":  "用户不存在",
 			"data": nil,
 		})
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{
-		"code": 200,
+		"code": 20000,
 		"msg":  "获取用户信息成功",
 		"data": userInfo,
 	})

@@ -1,10 +1,11 @@
 package api_reg
 
 import (
-	"github.com/gin-gonic/gin/binding"
 	"net/http"
 	"sso_gin/db"
 	"sso_gin/model"
+
+	"github.com/gin-gonic/gin/binding"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,7 +24,7 @@ func HandleStepQq(ctx *gin.Context) {
 	}
 	MYSQL.Model(&model.RegFlow{}).Where("serial = ?", serial).Updates(postForm)
 	ctx.JSON(http.StatusOK, gin.H{
-		"code":    200,
+		"code":    20000,
 		"message": "TODO",
 		"data": map[string]interface{}{
 			"url": "/reg/flow/6",

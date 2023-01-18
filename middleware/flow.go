@@ -22,7 +22,7 @@ func FlowCheck() gin.HandlerFunc {
 		err := ctx.ShouldBindBodyWith(&serialForm, binding.JSON)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{
-				"code":    400,
+				"code":    40001,
 				"message": "没有提供流水号",
 				"url":     "/reg/flow/0",
 			})
@@ -34,10 +34,12 @@ func FlowCheck() gin.HandlerFunc {
 		var regFlow model.RegFlow
 		result := MYSQL.First(&regFlow, "serial = ?", serial)
 		if result.Error != nil {
-			ctx.JSON(http.StatusUnprocessableEntity, gin.H{
-				"code":    422,
+			ctx.JSON(http.StatusOK, gin.H{
+				"code":    42208,
 				"message": "流程不存在",
-				"url":     "/reg/flow/0",
+				"data": map[string]interface{}{
+					"url": "/reg",
+				},
 			})
 			ctx.Abort()
 			return
@@ -57,10 +59,12 @@ func FlowCheck() gin.HandlerFunc {
 		}
 		myStep := fmt.Sprintf("%d", regFlow.Step+1)
 		if yourStep != myStep {
-			ctx.JSON(http.StatusUnprocessableEntity, gin.H{
-				"code":    422,
-				"message": "流程错误",
-				"url":     fmt.Sprintf("/reg/flow/%v", myStep),
+			ctx.JSON(http.StatusOK, gin.H{
+				"code":    42210,
+				"message": fmt.Sprintf("流程错误，你应该在第 %v 步", myStep),
+				"data": map[string]interface{}{
+					"url": fmt.Sprintf("/reg/flow/%v", myStep),
+				},
 			})
 			ctx.Abort()
 			return

@@ -12,8 +12,8 @@ func JwtAuth() gin.HandlerFunc {
 		auth := ctx.Request.Header.Get("Authorization")
 		if len(auth) == 0 {
 			ctx.Abort()
-			ctx.JSON(http.StatusUnprocessableEntity, gin.H{
-				"code":    422,
+			ctx.JSON(http.StatusUnauthorized, gin.H{
+				"code":    40101,
 				"message": "token不存在",
 			})
 			return
@@ -22,8 +22,8 @@ func JwtAuth() gin.HandlerFunc {
 		_, err := utils.ParseToken(auth)
 		if err != nil {
 			ctx.Abort()
-			ctx.JSON(http.StatusUnprocessableEntity, gin.H{
-				"code":    422,
+			ctx.JSON(http.StatusUnauthorized, gin.H{
+				"code":    40102,
 				"message": err.Error(),
 			})
 			return

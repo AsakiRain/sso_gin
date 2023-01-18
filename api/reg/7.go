@@ -55,15 +55,15 @@ func HandleStepDone(ctx *gin.Context) {
 	}
 	jwtToken, err := utils.GenerateToken(userJwt)
 	if err != nil {
-		ctx.JSON(http.StatusOK, gin.H{
-			"code":    500,
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"code":    50000,
 			"message": fmt.Sprintf("生成token失败: %v", err),
 			"data":    nil,
 		})
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{
-		"code":    200,
+		"code":    20000,
 		"message": "注册成功",
 		"data": map[string]interface{}{
 			"token": jwtToken,
