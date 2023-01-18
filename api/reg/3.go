@@ -41,6 +41,16 @@ func HandleStepAccount(ctx *gin.Context) {
 		})
 		return
 	}
+
+	if !utils.CheckRegxp(nickname, constant.RegNickname) {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"code":    40002,
+			"message": "昵称格式错误",
+			"data":    nil,
+		})
+		return
+	}
+
 	if !utils.CheckRegxp(password, constant.RegPassword) {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"code":    40002,
