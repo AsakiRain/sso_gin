@@ -99,7 +99,6 @@ func HandleGenerateLink(ctx *gin.Context) {
 		"code":    20000,
 		"message": "创建成功",
 		"data": map[string]interface{}{
-			"url":         "/reg/flow/4",
 			"link_start":  utils.GenerateLinkStart(state),
 			"link_remake": utils.GenerateLinkRemake(),
 		},
