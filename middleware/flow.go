@@ -52,8 +52,8 @@ func FlowCheck() gin.HandlerFunc {
 			ctx.Next()
 			return
 		}
-		yourStep := ctx.Request.URL.Path[len("/reg/flow/"):]
-		if regFlow.Step+1 >= 3 && ctx.FullPath() == "/reg/flow/4/query" {
+		yourStep := ctx.Request.URL.Path[len("/reg/flow/") : len("/reg/flow/")+1]
+		if regFlow.Step >= 3 && ctx.FullPath() == "/reg/flow/4/query" {
 			ctx.Next()
 			return
 		}
