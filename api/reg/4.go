@@ -1,6 +1,8 @@
 package api_reg
 
 import (
+	"fmt"
+	"log"
 	"net/http"
 	"sso_gin/db"
 	"sso_gin/model"
@@ -8,6 +10,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
+	uuid "github.com/satori/go.uuid"
 )
 
 func HandleStepMs(ctx *gin.Context) {
@@ -58,6 +61,47 @@ func HandleStepMs(ctx *gin.Context) {
 		"code":    20000,
 		"message": "流程启动",
 		"data":    nil,
+	})
+}
+
+func HandleGenerateLink(ctx *gin.Context) {
+	MYSQL := *db.MYSQL
+	var serialForm model.SerialForm
+	err := ctx.ShouldBindBodyWith(&serialForm, binding.JSON)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"code":    40001,
+			"message": "参数错误",
+			"data":    nil,
+		})
+		return
+	}
+	serial := serialForm.Serial
+
+	uuidV4, err := uuid.NewV4()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"code":    50000,
+			"message": fmt.Sprintf("state生成失败: %s", err.Error()),
+			"data":    nil,
+		})
+		log.Printf("未能产生state：%v", err)
+		return
+	}
+	state := uuidV4.String()
+
+	postForm := map[string]interface{}{
+		"ms_state": state,
+	}
+
+	MYSQL.Model(&model.RegFlow{}).Where("serial = ?", serial).Updates(postForm)
+	ctx.JSON(http.StatusOK, gin.H{
+		"code":    20000,
+		"message": "创建成功",
+		"data": map[string]interface{}{
+			"link_start":  utils.GenerateLinkStart(state),
+			"link_remake": utils.GenerateLinkRemake(),
+		},
 	})
 }
 

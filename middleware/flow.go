@@ -53,10 +53,11 @@ func FlowCheck() gin.HandlerFunc {
 			return
 		}
 		yourStep := ctx.Request.URL.Path[len("/reg/flow/"):]
-		if yourStep == "4" && ctx.Request.Method == "GET" {
+		if regFlow.Step+1 >= 3 && ctx.FullPath() == "/reg/flow/4/query" {
 			ctx.Next()
 			return
 		}
+
 		myStep := fmt.Sprintf("%d", regFlow.Step+1)
 		if yourStep != myStep {
 			ctx.JSON(http.StatusOK, gin.H{
