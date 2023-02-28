@@ -95,7 +95,6 @@ func LinkStart(serial string, msToken string) bool {
 	}
 
 	updateForm := map[string]interface{}{
-		"step":                  4,
 		"MsStep":                7,
 		"MsTip":                 ToJson(&msTipForm),
 		"MsEnd":                 1,

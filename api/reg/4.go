@@ -13,7 +13,7 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
-func HandleStepMs(ctx *gin.Context) {
+func HandleMsStart(ctx *gin.Context) {
 	MYSQL := *db.MYSQL
 	var stepMsForm model.StepMsForm
 	err := ctx.ShouldBindBodyWith(&stepMsForm, binding.JSON)
@@ -142,6 +142,38 @@ func HandleMsQuery(ctx *gin.Context) {
 			"ms_tip":    msTip,
 			"ms_end":    regFlow.MsEnd,
 			"minecraft": msMinecraft,
+		},
+	})
+}
+
+func HandleStepMs(ctx *gin.Context) {
+	MYSQL := *db.MYSQL
+	var serialForm model.SerialForm
+	ctx.ShouldBindBodyWith(&serialForm, binding.JSON)
+	// 这里也不用担心绑定失败，因为中间件试过了
+	serial := serialForm.Serial
+
+	var regFlow model.RegFlow
+	MYSQL.Model(&regFlow).Where("serial = ?", serial).First(&regFlow)
+
+	if regFlow.MsEnd != 1 {
+		ctx.JSON(http.StatusOK, gin.H{
+			"code":    42211,
+			"message": "认证流程未完成，请等待",
+			"data":    nil,
+		})
+		return
+	}
+
+	postForm := map[string]interface{}{
+		"step": 4,
+	}
+	MYSQL.Model(&model.RegFlow{}).Where("serial = ?", serial).Updates(postForm)
+	ctx.JSON(http.StatusOK, gin.H{
+		"code":    20000,
+		"message": "认证成功",
+		"data": map[string]interface{}{
+			"url": "/reg/flow/4",
 		},
 	})
 }
