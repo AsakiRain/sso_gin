@@ -13,7 +13,7 @@ type RegFlow struct {
 	Log                   *string        `json:"log"`
 	MsStep                int            `json:"ms_step" gorm:"default:0;not null"`
 	MsTip                 *string        `json:"ms_tip"`
-	MsEnd                 int            `json:"ms_end" gorm:"default:0;not null"`
+	MsStatus              *string        `json:"ms_status"`
 	MsState               *string        `json:"ms_state"`
 	MinecraftId           *string        `json:"minecraft_id"`
 	MinecraftName         *string        `json:"minecraft_name"`

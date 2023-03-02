@@ -49,8 +49,8 @@ func GailyPass(serial string, step int, msTipForm model.MsTipForm) bool {
 	MYSQL := *db.MYSQL
 
 	commitForm := map[string]interface{}{
-		"ms_step": step,
-		"ms_tip":  ToJson(&msTipForm),
+		"MsStep": step,
+		"MsTip":  ToJson(&msTipForm),
 	}
 	MYSQL.Model(&model.RegFlow{}).Where("serial = ?", serial).Updates(commitForm)
 	return true
@@ -60,9 +60,9 @@ func SadlyDie(serial string, step int, msTipForm model.MsTipForm) bool {
 	MYSQL := *db.MYSQL
 
 	commitForm := map[string]interface{}{
-		"ms_step": step,
-		"ms_tip":  ToJson(&msTipForm),
-		"ms_end":  -1,
+		"MsStep":   step,
+		"MsTip":    ToJson(&msTipForm),
+		"MsStatus": "failed",
 	}
 	MYSQL.Model(&model.RegFlow{}).Where("serial = ?", serial).Updates(commitForm)
 	return false
@@ -97,7 +97,7 @@ func LinkStart(serial string, msToken string) bool {
 	updateForm := map[string]interface{}{
 		"MsStep":                7,
 		"MsTip":                 ToJson(&msTipForm),
-		"MsEnd":                 1,
+		"MsStatus":              "succeed",
 		"MinecraftId":           msProfileReturn.Id,
 		"MinecraftName":         msProfileReturn.Name,
 		"MinecraftSkins":        ToJson(msProfileReturn.Skins),

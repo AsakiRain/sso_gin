@@ -44,7 +44,7 @@ func HandleMsStart(ctx *gin.Context) {
 		"ms_step":                0,
 		"ms_tip":                 nil,
 		"ms_state":               nil,
-		"ms_end":                 0,
+		"ms_status":              "running",
 		"minecraft_id":           nil,
 		"minecraft_name":         nil,
 		"minecraft_skins":        nil,
@@ -120,7 +120,7 @@ func HandleMsQuery(ctx *gin.Context) {
 	if regFlow.MsTip != nil {
 		utils.ToStruct(&msTip, *regFlow.MsTip)
 	}
-	if regFlow.MsEnd == 1 {
+	if regFlow.MsStatus != nil && *regFlow.MsStatus == "succeed" {
 		var minecraftSkins []model.MinecraftSkin
 		var minecraftCapes []model.MinecraftCape
 		var minecraftEntitlements model.MinecraftEntitlements
@@ -140,7 +140,7 @@ func HandleMsQuery(ctx *gin.Context) {
 		"data": map[string]interface{}{
 			"ms_step":   regFlow.MsStep,
 			"ms_tip":    msTip,
-			"ms_end":    regFlow.MsEnd,
+			"ms_status": regFlow.MsStatus,
 			"minecraft": msMinecraft,
 		},
 	})
@@ -156,7 +156,24 @@ func HandleStepMs(ctx *gin.Context) {
 	var regFlow model.RegFlow
 	MYSQL.Model(&regFlow).Where("serial = ?", serial).First(&regFlow)
 
-	if regFlow.MsEnd != 1 {
+	if regFlow.MsStatus == nil {
+		ctx.JSON(http.StatusOK, gin.H{
+			"code":    42212,
+			"message": "认证流程尚未启动",
+			"data":    nil,
+		})
+	}
+
+	if *regFlow.MsStatus == "failed" {
+		ctx.JSON(http.StatusOK, gin.H{
+			"code":    42213,
+			"message": "认证失败，请重试",
+			"data":    nil,
+		})
+		return
+	}
+
+	if *regFlow.MsStatus == "running" {
 		ctx.JSON(http.StatusOK, gin.H{
 			"code":    42211,
 			"message": "认证流程未完成，请等待",
