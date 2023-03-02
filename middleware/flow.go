@@ -6,10 +6,17 @@ import (
 	"net/http"
 	"sso_gin/db"
 	"sso_gin/model"
+	"sso_gin/utils"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 )
+
+var PassList = []string{
+	"/reg/flow/4/query",
+	"/reg/flow/4/link",
+	"/reg/flow/4/start",
+}
 
 func FlowCheck() gin.HandlerFunc {
 	MYSQL := *db.MYSQL
@@ -53,7 +60,7 @@ func FlowCheck() gin.HandlerFunc {
 			return
 		}
 		yourStep := ctx.Request.URL.Path[len("/reg/flow/") : len("/reg/flow/")+1]
-		if regFlow.Step >= 3 && ctx.FullPath() == "/reg/flow/4/query" {
+		if regFlow.Step >= 3 && utils.Contains(PassList, ctx.FullPath()) {
 			ctx.Next()
 			return
 		}
