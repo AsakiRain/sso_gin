@@ -13,7 +13,7 @@ type RegFlow struct {
 	Log                   *string        `json:"log"`
 	MsStep                int            `json:"ms_step" gorm:"default:0;not null"`
 	MsTip                 *string        `json:"ms_tip"`
-	MsStatus              *string        `json:"ms_status"`
+	MsStatus              *string        `json:"ms_status" gorm:"default:'idle'"`
 	MsState               *string        `json:"ms_state"`
 	MinecraftId           *string        `json:"minecraft_id"`
 	MinecraftName         *string        `json:"minecraft_name"`
@@ -26,8 +26,8 @@ type RegFlow struct {
 	Nickname              *string        `json:"nickname"`
 	Password              *string        `json:"password"`
 	Salt                  *string        `json:"salt"`
-	QqStep                int            `json:"qq_step" gorm:"default:0;not null"`
-	QqTip                 *string        `json:"qq_tip"`
+	QqNumber              *string        `json:"qq_number"`
+	QqStatus              *string        `json:"qq_status" gorm:"default:'idle'"`
 	CreatedAt             time.Time      `json:"created_at" gorm:"autoCreateTime;not null"`
 	UpdatedAt             time.Time      `json:"updated_at" gorm:"autoUpdateTime;not null"`
 	DeletedAt             gorm.DeletedAt `json:"deleted_at"`
@@ -208,4 +208,26 @@ type MyTraceInfo struct {
 		Port int
 		Zone string
 	}
+}
+
+type QqCodeForm struct {
+	Qq     string `json:"qq" binding:"required"`
+	Serial string `json:"serial" binding:"required"`
+}
+
+type QqCaptcha struct {
+	Serial    string
+	Qq        string
+	Code      string
+	ExpiresAt int64
+}
+
+type QqCheckForm struct {
+	RpcSecret string `json:"rpc_secret" binding:"required"`
+	Qq        string `json:"qq" binding:"required"`
+	Code      string `json:"code" binding:"required"`
+}
+
+type StepQqForm struct {
+	Serial string `json:"serial" binding:"required"`
 }

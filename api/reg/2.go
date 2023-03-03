@@ -29,7 +29,7 @@ func HandleStepEmail(ctx *gin.Context) {
 	code := strings.ToUpper(stepEmailForm.Code)
 	serial := stepEmailForm.Serial
 
-	valid := utils.CheckCode(email, code)
+	valid := utils.CheckEmailCode(email, code)
 	if !valid {
 		ctx.JSON(http.StatusOK, gin.H{
 			"code":    42206,

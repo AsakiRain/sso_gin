@@ -12,16 +12,19 @@ import (
 	"github.com/gin-gonic/gin/binding"
 )
 
-var PassList = []string{
+var NO_CHECK_SERIAL_LIST = []string{
+	"/reg/flow/0",
+	"/reg/flow/5/check",
+}
+
+var NO_CHECK_STEP_LIST = []string{
 	"/reg/flow/4/query",
-	"/reg/flow/4/link",
-	"/reg/flow/4/start",
 }
 
 func FlowCheck() gin.HandlerFunc {
 	MYSQL := *db.MYSQL
 	return func(ctx *gin.Context) {
-		if ctx.Request.URL.Path == "/reg/flow/0" {
+		if utils.Contains(NO_CHECK_SERIAL_LIST, ctx.FullPath()) {
 			ctx.Next()
 			return
 		}
@@ -60,7 +63,7 @@ func FlowCheck() gin.HandlerFunc {
 			return
 		}
 		yourStep := ctx.Request.URL.Path[len("/reg/flow/") : len("/reg/flow/")+1]
-		if regFlow.Step >= 3 && utils.Contains(PassList, ctx.FullPath()) {
+		if regFlow.Step >= 3 && utils.Contains(NO_CHECK_STEP_LIST, ctx.FullPath()) {
 			ctx.Next()
 			return
 		}

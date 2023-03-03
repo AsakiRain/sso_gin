@@ -105,7 +105,7 @@ func HandleGenerateLink(ctx *gin.Context) {
 	})
 }
 
-func HandleMsQuery(ctx *gin.Context) {
+func HandleMsStatus(ctx *gin.Context) {
 	MYSQL := *db.MYSQL
 	var serialForm model.SerialForm
 	ctx.ShouldBindBodyWith(&serialForm, binding.JSON)
@@ -190,7 +190,7 @@ func HandleStepMs(ctx *gin.Context) {
 		"code":    20000,
 		"message": "认证成功",
 		"data": map[string]interface{}{
-			"url": "/reg/flow/4",
+			"url": "/reg/flow/5",
 		},
 	})
 }

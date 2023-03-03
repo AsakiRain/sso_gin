@@ -26,8 +26,8 @@ func GenerateLinkStart(state string) string {
 }
 
 func GenerateLinkRemake() string {
-	return "https://login.microsoftonline.com/logout.srf"
-	// return "https://login.live.com/logout.srf"
+	// return "https://login.microsoftonline.com/logout.srf"
+	return "https://login.live.com/logout.srf"
 }
 
 func JudgeResp(resp *resty.Response, err error, msTipForm *model.MsTipForm, info string) bool {
