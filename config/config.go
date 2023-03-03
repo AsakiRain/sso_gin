@@ -23,6 +23,7 @@ var (
 	MsClientId     string
 	MsClientSecret string
 	MsRedirectUri  string
+	QqRpcSecret    string
 )
 
 func init() {
@@ -50,4 +51,5 @@ func init() {
 	MsClientId = viper.Get("ms.client_id").(string)
 	MsClientSecret = viper.Get("ms.client_secret").(string)
 	MsRedirectUri = viper.Get("ms.redirect_uri").(string)
+	QqRpcSecret = viper.Get("qq.rpc_secret").(string)
 }
